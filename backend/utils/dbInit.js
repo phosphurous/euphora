@@ -8,8 +8,8 @@ const generateHashedPassword = async (password) => {
   return hashedPassword;
 }
 
-// const data =
-//   { name: "Jack Tan", email: "jack@gmail.com", account_type: "user" }
+const data =
+  { name: "Jack Tan", email: "jack@gmail.com", account_type: "user" }
 
 // const skillData = [
 //   { skill: "C", category: "Programming" },
@@ -38,11 +38,11 @@ const seedData = async () => {
     const user = { account_id: newAccount.account_id };
     const newUser = await User.create(user);
 
-    //To add Skill into DB
-    await Skill.bulkCreate(skillData, { raw: true });
+    // //To add Skill into DB
+    // await Skill.bulkCreate(skillData, { raw: true });
 
-    //To add interest into DB
-    await Interest.bulkCreate(interestData, { raw: true});
+    // //To add interest into DB
+    // await Interest.bulkCreate(interestData, { raw: true});
 
     // console.log("Successfully seeded user " + data.name);
     console.log("[SYSTEM] Successfully seeded all data.")
