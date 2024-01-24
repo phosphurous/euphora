@@ -25,6 +25,8 @@ const seedData = require('./utils/dbInit');
 //Initialise associations
 // const initAssociations = require('./models/associations');
 
+app.use('/', (req, res) => res.status(200).json("all good :)"))
+
 // //Account routes
 // app.use(API_VER, require('./routes/accountRoutes'))
 // //User routes
