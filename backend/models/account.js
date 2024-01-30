@@ -23,14 +23,14 @@ const Account = sequelize.define(
             type: DataTypes.STRING(),
             allowNull: false
         },
-        contact_no: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        account_type: {
-            type: DataTypes.STRING(),
-            allowNULL: false
-        },
+        // contact_no: {
+        //     type: DataTypes.INTEGER,
+        //     allowNull: true
+        // },
+        // account_type: {
+        //     type: DataTypes.STRING(),
+        //     allowNULL: false
+        // },
         json_tokenID: {
             type:DataTypes.STRING(),
             allowNULL: true

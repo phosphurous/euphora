@@ -23,8 +23,10 @@ const sequelize = require('./config/database');
 const seedData = require('./utils/dbInit');
 
 //Initialise associations
-// const initAssociations = require('./models/associations');
+const initAssociations = require('./models/associations');
 
+console.log(API_VER + '/profile')
+app.use(API_VER + '/profile', require('./routes/profileRoutes'))
 app.use('/', (req, res) => res.status(200).json("all good :)"))
 
 // //Account routes
@@ -58,4 +60,4 @@ sequelize
     console.error("[ERROR] Error synchronizing models:", err);
   });
 
-// initAssociations();
+initAssociations();
