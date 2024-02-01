@@ -9,6 +9,8 @@ const Profile = sequelize.define(
             allowNull: false,
             autoIncrement: true,
         },
+    },{
+        timestamps : false,
     }
 )
 
