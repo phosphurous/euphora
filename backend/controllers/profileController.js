@@ -8,12 +8,16 @@ const get_profile_from_acc_id = async(req, res) => {
     try {
         const profile = await getProfile(req, res, acc_id);
         console.log("hello",profile);
-        return res.status(200).json({
+        res.status(200)
+        res.json({
             ...profile
         })
+        return;
     } catch (error) {
         console.log(error)
-        return res.status(500).json({error: error})
+        res.status(500)
+        res.json({error: error})
+        return;
     }
 }
 
@@ -46,9 +50,11 @@ const get_all_allergies = async(req,res) => {
 const validate_user_id_in_params = (req, res) => {
     const acc_id = req.params.id
     if(acc_id === undefined){
-        return res.status(400).json({
+        res.status(400)
+        res.json({
             message : "invalid user id"
         })
+        return;
     }
     return acc_id;
 }
