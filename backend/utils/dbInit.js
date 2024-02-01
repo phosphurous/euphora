@@ -1,6 +1,11 @@
 const Account = require("../models/account");
+const Ingredient = require("../models/ingredient");
+const Alias = require("../models/alias");
+const Profile = require("../models/profile");
+const {Allergy} = require("../models/joinTables")
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const { IngredientAliasJoint } = require("../models/joinTables");
 
 const generateHashedPassword = async (password) => {
   const salt = await bcrypt.genSalt();
@@ -11,39 +16,34 @@ const generateHashedPassword = async (password) => {
 const data =
   { name: "Jack Tan", email: "jack@gmail.com", account_type: "user" }
 
-// const skillData = [
-//   { skill: "C", category: "Programming" },
-//   { skill: "Java", category: "Programming" },
-//   { skill: "Python", category: "Programming" },
-//   { skill: "JavaScript", category: "Programming" },
-//   { skill: "Discrete Math", category: "Math" },
-//   { skill: "Linear Algebra", category: "Math" },
-//   { skill: "Statistics", category: "Math" },
-//   { skill: "English", category: "Language" },
-//   { skill: "Chinese", category: "Language" },
-//   { skill: "Japanese", category: "Language" }
-// ];
 
-// const interestData = [
-//   { interest: "Programming" },
-//   { interest: "Math" },
-//   { interest: "Language" }
-// ];
+
+const ingredients_data = [
+    {ingredient_id : 1 , ingredient_name : "niacin", isCommonAllergen : false},
+    {ingredient_id : 2 , ingredient_name : "not relevant", isCommonAllergen : false}
+]
+const alias_data = [
+    {alias_id : 1, alias_name : "niacinamide"}, 
+    {alias_id : 2, alias_name : "vitB"},
+    {alias_id : 3, alias_name : "irrelevant"}
+]
+
+
+
 
 const seedData = async () => {
   try {
-    data.password = await generateHashedPassword('Tester123');
-    const newAccount = await Account.create(data, { raw: true });
+    // data.password = await generateHashedPassword('Tester123');
+    // const newAccount = await Account.create(data, { raw: true });
     
-    const user = { account_id: newAccount.account_id };
-    const newUser = await User.create(user);
-
-    // //To add Skill into DB
-    // await Skill.bulkCreate(skillData, { raw: true });
-
-    // //To add interest into DB
-    // await Interest.bulkCreate(interestData, { raw: true});
-
+    // const user = { account_id: newAccount.account_id };
+    // const newUser = await User.create(user);
+    // await Profile.create({profile_id : 1, account_id : 1})
+    // await Ingredient.bulkCreate(ingredients_data, {raw:true});
+    // await Alias.bulkCreate(alias_data, {raw:true});
+    // await IngredientAliasJoint.bulkCreate([{ingredient_id : 1, alias_id : 1}, {ingredient_id : 1, alias_id : 2}, {ingredient_id : 2, alias_id : 3}])
+    // await Allergy.create({allergy_id : 1, profile_id : 1, ingredient_id : 1})
+    
     // console.log("Successfully seeded user " + data.name);
     console.log("[SYSTEM] Successfully seeded all data.")
   } catch(err) {

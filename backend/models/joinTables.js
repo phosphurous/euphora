@@ -15,5 +15,16 @@ const Allergy = sequelize.define(
     }
 )
 
+const IngredientAliasJoint = sequelize.define(
+    "IngredientAliasJoint", {
+        ingredientAliasJoint_id : {
+                type: DataTypes.INTEGER,
+                primaryKey: true,
+                allowNull: false,
+                autoIncrement: true,
+        }
+    }, {timestamps : false}
+)
 
-module.exports = { Allergy }
+
+module.exports = { Allergy , IngredientAliasJoint}

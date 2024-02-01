@@ -1,7 +1,7 @@
 const Profile = require('../models/profile');
 const Ingredient = require('../models/ingredient');
-const { Allergy } = require('../models/joinTables');
-
+const { Allergy, IngredientAliasJoint } = require('../models/joinTables');
+const Alias = require('../models/alias')
 
 const get_profile_from_id = async(req, res) => {
     acc_id = validate_user_id_in_params(req, res);
@@ -29,10 +29,14 @@ const get_all_allergies = async(req,res) => {
         const { profile_id } = profile;
         const ingredient_profile_obj = await Ingredient.findAll({ 
             include : [{
-                model : Profile,
+                model : Profile, 
                 through : Allergy,
                 attributes : [],
                 where : {profile_id : profile_id}
+            },{
+                model : Alias,
+                // through : IngredientAliasJoint,
+                attributes : ['alias_name'],
             }] 
         })
             console.log(ingredient_profile_obj)
