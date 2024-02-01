@@ -22,13 +22,13 @@ BRH:0
 end_of_record
 TN:
 SF:controllers\profileController.js
-FN:6,get_profile_from_acc_id
+FN:6,get_profile_from_id
 FN:24,get_all_allergies
 FN:50,validate_user_id_in_params
 FN:62,getProfile
 FNF:4
 FNH:3
-FNDA:1,get_profile_from_acc_id
+FNDA:1,get_profile_from_id
 FNDA:0,get_all_allergies
 FNDA:1,validate_user_id_in_params
 FNDA:1,getProfile

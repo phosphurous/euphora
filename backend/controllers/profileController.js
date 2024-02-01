@@ -3,7 +3,7 @@ const Ingredient = require('../models/ingredient');
 const { Allergy } = require('../models/joinTables');
 
 
-const get_profile_from_acc_id = async(req, res) => {
+const get_profile_from_id = async(req, res) => {
     acc_id = validate_user_id_in_params(req, res);
     try {
         const profile = await getProfile(req, res, acc_id);
@@ -74,4 +74,4 @@ const getProfile = async(req, res, acc_id) => {
     const {dataValues : profile} = profileObj; 
     return profile;
 } 
-module.exports = {get_profile_from_acc_id, get_all_allergies}
+module.exports = {get_profile_from_id, get_all_allergies}

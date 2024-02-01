@@ -1,4 +1,4 @@
-const {get_profile_from_acc_id} = require('../../controllers/profileController')
+const {get_profile_from_id} = require('../../controllers/profileController')
 const Profile = require("../../models/profile")
 // const Account = require("../../models/Account")
 
@@ -23,7 +23,7 @@ test('return 400 when no such profile found', async() => {
 
     Profile.findOne.mockImplementationOnce(() => null);
 
-    await get_profile_from_acc_id(req,res)
+    await get_profile_from_id(req,res)
     expect(res.status).toHaveBeenCalledWith(400)
     expect(res.json).toHaveBeenCalledTimes(1)
 })
