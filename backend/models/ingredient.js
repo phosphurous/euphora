@@ -16,7 +16,7 @@ const Ingredient = sequelize.define(
             // unique: true,
             allowNull: false,
         },
-        isCommonAllergen : {
+        is_common_allergen : {
             type: DataTypes.BOOLEAN,
             defaultValue: false,
             allowNull:false,
