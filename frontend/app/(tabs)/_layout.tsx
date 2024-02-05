@@ -1,7 +1,7 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Image, Pressable } from 'react-native';
 
 import Colors from '@/constants/Colors';
 import { useColorScheme } from '@/components/useColorScheme';
@@ -31,7 +31,9 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <Image
+            source={require('../../assets/images/home.png')}
+            style={{ width: 20, height: 20 }} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -52,21 +54,27 @@ export default function TabLayout() {
         name="scan"
         options={{
           title: "Scan",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <Image
+          source={require('../../assets/images/scan.png')}
+          style={{ width: 20, height: 20 }} />,
         }}
       />
       <Tabs.Screen
         name="routine"
         options={{
           title: "Routine",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <Image
+          source={require('../../assets/images/calendar.png')}
+          style={{ width: 20, height: 20 }} />,
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: "Profile",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          tabBarIcon: ({ color }) => <Image
+          source={require('../../assets/images/profile.png')}
+          style={{ width: 20, height: 20 }} />,
         }}
       />
     </Tabs>
