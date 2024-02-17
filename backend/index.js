@@ -17,7 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Import sequelize
-const sequelize = require('./config/database');
+const {sequelize} = require('./config/database');
 
 //Seed data
 const seedData = require('./utils/dbInit');

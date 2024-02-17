@@ -36,16 +36,16 @@ const routine_data = [
 
 const seedData = async () => {
   try {
-    data.password = await generateHashedPassword('Tester123');
-    const newAccount = await Account.create(data, { raw: true });
+    // data.password = await generateHashedPassword('Tester123');
+    // const newAccount = await Account.create(data, { raw: true });
     
-    const user = { account_id: newAccount.account_id };
-    const newUser = await User.create(user);
-    await Profile.create({profile_id : 1, account_id : 1})
-    await Ingredient.bulkCreate(ingredients_data, {raw:true});
-    await Alias.bulkCreate(alias_data, {raw:true});
-    await Allergy.create({allergy_id : 1, profile_id : 1, ingredient_id : 1})
-    await Routine.bulkCreate(routine_data, {raw:true}),
+    // const user = { account_id: newAccount.account_id };
+    // const newUser = await User.create(user);
+    // await Profile.create({profile_id : 1, account_id : 1})
+    // await Ingredient.bulkCreate(ingredients_data, {raw:true});
+    // await Alias.bulkCreate(alias_data, {raw:true});
+    // await Allergy.create({allergy_id : 1, profile_id : 1, ingredient_id : 1})
+    // await Routine.bulkCreate(routine_data, {raw:true}),
     // console.log("Successfully seeded user " + data.name);
     console.log("[SYSTEM] Successfully seeded all data.")
   } catch(err) {

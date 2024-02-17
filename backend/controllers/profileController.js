@@ -3,6 +3,7 @@ const Ingredient = require('../models/ingredient');
 const { Allergy } = require('../models/joinTables');
 const Alias = require('../models/alias')
 const Routine = require('../models/routine');
+const {supabase} = require('../config/database')
 
 // not really useful more for testing
 const get_profile_from_id = async(req, res) => {
@@ -64,6 +65,13 @@ const get_all_routines = async(req,res) => {
     }
 }
 
+// const create_routine = async(req, res) => {
+//     console.log("uploading")
+//     // const buckets = await supabase.storage.listBuckets()
+//     const {data,error} = await supabase.storage.from('images/routine').upload('../test_images/example.png')
+//     console.log("uploaded, buckets:",data, error)
+//     res.status(200);
+// }
 // create a get routines filter by date function like specify as params ?start_date="", end_date=""
 
 
@@ -97,4 +105,6 @@ const getProfile = async(req, res, profile_id) => {
     const {dataValues : profile} = profileObj; 
     return profile;
 } 
-module.exports = {get_profile_from_id, get_all_allergies, get_all_routines}
+module.exports = {get_profile_from_id, get_all_allergies, get_all_routines, 
+    // create_routine
+}

@@ -1,6 +1,8 @@
 const { Sequelize } = require("sequelize");
 const {DB_URL} = require('../utils/config');
 const pg = require('pg')
+const { createClient }= require('@supabase/supabase-js');
+const { SUPABASE_URL, SUPABASE_PUBLIC_KEY } = require('../utils/config');
 
 
 //Setting up connection to DB
@@ -10,4 +12,12 @@ const sequelize = new Sequelize(DB_URL, {
     //timezone: '+08:00',
 });
 
-module.exports = sequelize;
+
+const supabase = createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY)
+console.log('SUPA INSTANCE:',supabase);
+
+module.exports = {sequelize, supabase};
+
+
+
+
