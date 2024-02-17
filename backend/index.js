@@ -25,6 +25,7 @@ const seedData = require('./utils/dbInit');
 //Initialise associations
 // const initAssociations = require('./models/associations');
 
+app.use('/ocr', require('./routes/ocrRoutes'))
 app.use('/', (req, res) => res.status(200).json("all good :)"))
 
 // //Account routes
