@@ -5,21 +5,21 @@ import { Text, View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
-import MlkitOcr from 'react-native-mlkit-ocr';
+import { FileSystemUploadType, uploadAsync } from 'expo-file-system';
 
 
 export default function ScanScreen2() {
     const [image, setImage] = useState(null);
     
     const pickImage = async () => {
-        const res2 = await fetch('http://192.168.56.1:3000/ocr/get-text')
-        const {data} = await res2.json();
-        console.log(data)
+        // const res2 = await fetch('http://192.168.56.1:3000/ocr/img-to-text')
+        // const {data} = await res2.json();
+        // console.log(data)
         // No permissions request is necessary for launching the image library
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            // aspect: [4, 3],
             quality: 1,
         });
 
@@ -27,21 +27,16 @@ export default function ScanScreen2() {
 
         if (!result.canceled) {
             setImage(result.assets[0].uri);
-            // const resultFromUri = await MlkitOcr.detectFromUri(result.assets[0].uri);
+            const uploadResult = await uploadAsync('http://192.168.56.1:3000/ocr/img-to-text', result.assets[0].uri, {
+                httpMethod: 'POST',
+                uploadType: FileSystemUploadType.MULTIPART,
+                fieldName: 'demo_image'
+            });
+            console.log(uploadResult)
         }
     };
 
-//   useEffect(() => {
-//     const HARDCODED_URI = "https://miro.medium.com/v2/resize:fit:654/1*smMQq7p_o8pPZoJTCaGMwQ.png" 
-//     // const result = await TextRecognition.recognize(image.asset[0].uri);
-//     const get_result = async() => {
-//         const result = await TextRecognition.recognize(HARDCODED_URI);
-//         console.log(result);
-//     }
-//         // console.log(image);
-//     get_result()
-//   },[])
-//   useEffect
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Scan2</Text>
