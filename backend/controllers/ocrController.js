@@ -2,20 +2,22 @@ const { ocrSpace } = require('ocr-space-api-wrapper');
 
 async function img_to_text (req, res) {
   try {
-
-    const {buffer, mimetype} = req.file
+      const {buffer, mimetype} = req.file
+      console.log(req.file)
     const base64String =  buffer.toString('base64');
     const dataUrl = `data:${mimetype};base64,${base64String}`;
+    // console.log(dataUrl)
     
     // Using your personal API key + local file
     const res2 =  await ocrSpace(dataUrl, 
     { apiKey: 'K87754763988957' });
-    // console.log(res2);
+    console.log(res2);
     results = res2.ParsedResults;
     ls = []
     results.map(({ParsedText}) => {console.log(ParsedText); ls.push(ParsedText);})
     return res.status(200).json({data : ls});
 
+    // return res.status(200).json({data : "empty"});
 } catch (error) {
     console.error(error);
     return res.status(200).json({data : "empty"});
