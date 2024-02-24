@@ -1,7 +1,6 @@
 const { DataTypes } = require('sequelize');
 const {sequelize} = require('../config/database');
 
-
 const Ingredient = sequelize.define(
     'Ingredient', {
         ingredient_id : {
@@ -21,8 +20,10 @@ const Ingredient = sequelize.define(
             defaultValue: false,
             allowNull:false,
         }
-    },{
-        timestamps : false,
+    },
+    {
+      timestamps: false,
+      tableName: "ingredient"
     }
 )
 

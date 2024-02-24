@@ -1,15 +1,15 @@
 const {sequelize} = require('../config/database');
 const {DataTypes} = require('sequelize');
 
-const Routine = sequelize.define(
-    "Routine", {
-        routine_id : {
+const Product = sequelize.define(
+    "Product", {
+        product_id : {
             type : DataTypes.INTEGER,
             primaryKey : true,
             allowNull : false,
             autoIncrement: true,
         },
-        name : {
+        name: {
             type : DataTypes.STRING,
             allowNull : false,
         },
@@ -17,19 +17,15 @@ const Routine = sequelize.define(
             type : DataTypes.STRING,
             allowNull : false,
         },
-        start_date : {
-            type : DataTypes.DATEONLY,
-            allowNull : false,
-        },
-        end_date : {
-            type : DataTypes.DATEONLY,
+        image : {
+            type : DataTypes.STRING,
             allowNull : true,
         },
     },
     {
       timestamps: false,
-      tableName: "routine"
+      tableName: "product"
     }
 )
 
-module.exports = Routine;
+module.exports = Product;

@@ -9,10 +9,11 @@ const Profile = sequelize.define(
             allowNull: false,
             autoIncrement: true,
         },
-    },{
-        timestamps : false,
+    },
+    {
+      timestamps: false,
+      tableName: "profile"
     }
 )
-
 
 module.exports = Profile;

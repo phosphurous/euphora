@@ -1,19 +1,20 @@
 const {DataTypes} = require("sequelize");
 const {sequelize} = require("../config/database");
 
-
-const Allergy = sequelize.define(
-    "Allergy", {
-        allergy_id :{
-            type: DataTypes.INTEGER,
-            primaryKey: true,
-            allowNull: false,
-            autoIncrement: true,
-        }
-    },{
+const ProfileIngredient = sequelize.define(
+    "ProfileIngredient", 
+    {},
+    {
         timestamps : false
     }
 )
 
+const RoutineProduct = sequelize.define(
+  "RoutineProduct",
+  {},
+    {
+        timestamps : false
+    }
+)
 
-module.exports = { Allergy }
+module.exports = { ProfileIngredient, RoutineProduct }
