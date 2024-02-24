@@ -1,40 +1,58 @@
-import EditScreenInfo from "@/components/EditScreenInfo";
-import { Camera, CameraType } from "expo-camera";
-import { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
+import EditScreenInfo from '@/components/EditScreenInfo';
+import { Text, View } from '@/components/Themed';
+import Slider from "react-native-slider";
 
 export default function ScanFaceScreen() {
-  const [type, setType] = useState(CameraType.back);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
+  const [sliderValue, setSliderValue] = useState(0);
 
-  if (!permission) {
-    // Camera permissions are still loading
-    return <View />;
-  }
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Increment the slider value by 1 until it reaches 100
+      if (sliderValue < 100) {
+        setSliderValue(prevValue => prevValue + 1);
+      } else {
+        // If slider value reaches 100, clear the interval
+        clearInterval(interval);
+      }
+    }, 50); // Adjust the interval duration as needed
+    // Cleanup function to clear the interval when component unmounts
+    return () => clearInterval(interval);
+  }, []); // Empty dependency array to run effect only once when component mounts
 
-  if (!permission.granted) {
-    // Camera permissions are not granted yet
-    return (
-      <View style={styles.container}>
-        <Text style={{ textAlign: 'center' }}>We need your permission to show the camera</Text>
-        <Button onPress={requestPermission} title="grant permission" />
-      </View>
-    );
-  }
-
-  function toggleCameraType() {
-    setType(current => (current === CameraType.back ? CameraType.front : CameraType.back));
-  }
+  // Define custom track and thumb styles
+  const customStyle = {
+    track: {
+      height: 4,
+      borderRadius: 2,
+    },
+    thumb: {
+      width: 30,
+      height: 30,
+      borderRadius: 30 / 2,
+      backgroundColor: 'white',
+      borderColor: '#30a935',
+      borderWidth: 2,
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={type}>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={toggleCameraType}>
-            <Text style={styles.text}>Flip Camera</Text>
-          </TouchableOpacity>
-        </View>
-      </Camera>
+      <Text style={styles.title}>Scan Face</Text>
+      <Text>Test</Text>
+      <Slider
+        value={sliderValue}
+        minimumValue={0}
+        maximumValue={100}
+        trackStyle={customStyle.track} // Pass the custom track style
+        thumbStyle={customStyle.thumb} // Pass the custom thumb style
+        minimumTrackTintColor='#1fb28a'
+        maximumTrackTintColor='#d3d3d3'
+        thumbTintColor='#1a9274'
+      />
+      <Text>Slider that automatically slides from 0 to 100</Text>
+      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     </View>
   );
 }
@@ -42,25 +60,16 @@ export default function ScanFaceScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
     justifyContent: 'center',
   },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 64,
-  },
-  button: {
-    flex: 1,
-    alignSelf: 'flex-end',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 24,
+  title: {
+    fontSize: 20,
     fontWeight: 'bold',
-    color: 'white',
+  },
+  separator: {
+    marginVertical: 30,
+    height: 1,
+    width: '80%',
   },
 });
