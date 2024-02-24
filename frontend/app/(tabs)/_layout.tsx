@@ -60,9 +60,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="scan2"
+        name="scanface"
         options={{
-          title: "Scan2",
+          title: "ScanFace",
           tabBarIcon: ({ color }) => <Image
           source={require('../../assets/images/scan.png')}
           style={{ width: 20, height: 20 }} />,
