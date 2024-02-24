@@ -28,6 +28,7 @@ const initAssociations = require('./models/associations');
 
 app.use(API_VER + '/example', require('./routes/exampleRoutes'))
 app.use(API_VER + '/profile', require('./routes/profileRoutes'))
+app.use('/ocr', require('./routes/ocrRoutes'))
 app.use('/', (req, res) => res.status(200).json("all good :)"))
 
 // //Account routes
