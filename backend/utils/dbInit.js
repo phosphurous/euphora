@@ -3,7 +3,6 @@ const Ingredient = require("../models/ingredient");
 const Alias = require("../models/alias");
 const Profile = require("../models/profile");
 const {Allergy} = require("../models/joinTables")
-const User = require("../models/user");
 const bcrypt = require("bcrypt");
 const { DATEONLY } = require("sequelize");
 const Routine = require("../models/routine");

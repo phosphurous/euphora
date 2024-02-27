@@ -5,7 +5,8 @@ const ProfileIngredient = sequelize.define(
     "ProfileIngredient", 
     {},
     {
-        timestamps : false
+        timestamps : false,
+        tableName: "profile_ingredient"
     }
 )
 
@@ -13,7 +14,8 @@ const RoutineProduct = sequelize.define(
   "RoutineProduct",
   {},
     {
-        timestamps : false
+        timestamps : false,
+        tableName: "routine_product"
     }
 )
 
