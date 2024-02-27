@@ -2,8 +2,7 @@ const Account = require("../models/account");
 const Ingredient = require("../models/ingredient");
 const Alias = require("../models/alias");
 const Profile = require("../models/profile");
-const {Allergy} = require("../models/joinTables")
-const User = require("../models/user");
+const { Allergy } = require("../models/joinTables")
 const bcrypt = require("bcrypt");
 const { DATEONLY } = require("sequelize");
 const Routine = require("../models/routine");
@@ -15,7 +14,7 @@ const generateHashedPassword = async (password) => {
 }
 
 const data =
-  { name: "Jack Tan", email: "jack@gmail.com", account_type: "user" }
+  { name: "Jack Tan", email: "jack@gmail.com" }
 
 
 
@@ -36,14 +35,14 @@ const routine_data = [
 
 const seedData = async () => {
   try {
-    // data.password = await generateHashedPassword('Tester123');
-    // const newAccount = await Account.create(data, { raw: true });
+    data.password = await generateHashedPassword('Tester123');
     
-    // const user = { account_id: newAccount.account_id };
-    // const newUser = await User.create(user);
+    // await Account.create(data, { raw: true });
     // await Profile.create({profile_id : 1, account_id : 1})
     // await Ingredient.bulkCreate(ingredients_data, {raw:true});
     // await Alias.bulkCreate(alias_data, {raw:true});
+    
+    //MISSING TABLE. DONT RUN THESE 2
     // await Allergy.create({allergy_id : 1, profile_id : 1, ingredient_id : 1})
     // await Routine.bulkCreate(routine_data, {raw:true}),
     // console.log("Successfully seeded user " + data.name);

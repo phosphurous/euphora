@@ -1,7 +1,6 @@
 
 const express = require('express');
 const router = express.Router();
-const { authenticateToken } = require('../middlewares/authMiddlewares');
 const {get_all_allergies, get_profile_from_id, get_all_routines} = require('../controllers/profileController');
 
 //AUTHENTICATED ROUTES
