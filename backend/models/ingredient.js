@@ -15,11 +15,11 @@ const Ingredient = sequelize.define(
             // unique: true,
             allowNull: false,
         },
-        is_common_allergen : {
-            type: DataTypes.BOOLEAN,
-            defaultValue: false,
-            allowNull:false,
-        }
+        // is_common_allergen : {
+        //     type: DataTypes.BOOLEAN,
+        //     defaultValue: false,
+        //     allowNull:false,
+        // }
     },
     {
       timestamps: false,
