@@ -1,4 +1,5 @@
 const Product = require("../models/product");
+const { addRoutine, addProductToRoutine } = require("./routineController");
 
 //This is for user to add into the Routine
 const getAllProducts = async (req, res) => {
@@ -60,15 +61,23 @@ const addProduct = async (req, res) => {
         const productType = req.body.productType;
         const productDate = new Date().toJSON().slice(0, 10);
 
-        await Product.create({
+        const createdProductObj = await Product.create({
             name: productName, type: productType, date_added: productDate, image: null
         });
 
-        return res.status(201).json({ message: "Successfully created a product."});
+        const createdRoutineObj = await addRoutine(req);
+
+        const isQuerySuccessful = await addProductToRoutine(createdRoutineObj.routine_id, createdProductObj.product_id);
+
+        if (isQuerySuccessful) {
+            return res.status(201).json({ message: "Successfully added a product and routine."});
+        } else {
+            throw new Error("Failed to add product to routine");
+        }
         
     } catch (err) {
         console.log(err);
-        return res.status(500).json({ error: err });
+        return res.status(500).json({ message: "Check terminal", error: err });
     }
 }
 
