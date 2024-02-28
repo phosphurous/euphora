@@ -17,13 +17,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Import sequelize
-const sequelize = require('./config/database');
+const {sequelize} = require('./config/database');
 
 //Seed data
 const seedData = require('./utils/dbInit');
 
 //Initialise associations
-// const initAssociations = require('./models/associations');
+const initAssociations = require('./models/associations');
+
+app.use(API_VER + '/example', require('./routes/exampleRoutes'))
+app.use(API_VER + '/profile', require('./routes/profileRoutes'))
+app.use(API_VER + '/routines', require('./routes/routineRoutes'))
+app.use(API_VER + '/products', require('./routes/productRoutes'))
 
 app.use('/ocr', require('./routes/ocrRoutes'))
 app.use('/', (req, res) => res.status(200).json("all good :)"))
@@ -59,4 +64,4 @@ sequelize
     console.error("[ERROR] Error synchronizing models:", err);
   });
 
-// initAssociations();
+initAssociations();

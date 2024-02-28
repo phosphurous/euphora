@@ -1,5 +1,5 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/database");
+const {sequelize} = require("../config/database");
 
 const Account = sequelize.define(
     "Account",
@@ -17,24 +17,12 @@ const Account = sequelize.define(
         email: {
             type: DataTypes.STRING(50),
             allowNull: false,
-            unique: true
+            // unique: true
         },
         password: {
             type: DataTypes.STRING(),
             allowNull: false
         },
-        contact_no: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        account_type: {
-            type: DataTypes.STRING(),
-            allowNULL: false
-        },
-        json_tokenID: {
-            type:DataTypes.STRING(),
-            allowNULL: true
-        }
     },
     {
       timestamps: false,
