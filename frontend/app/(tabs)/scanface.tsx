@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import EditScreenInfo from '@/components/EditScreenInfo';
 import { Text, View } from '@/components/Themed';
-import Slider from "react-native-slider";
+import Slider from "@react-native-community/slider";
 
 export default function ScanFaceScreen() {
   const [sliderValue, setSliderValue] = useState(0);
@@ -19,23 +18,7 @@ export default function ScanFaceScreen() {
     }, 50); // Adjust the interval duration as needed
     // Cleanup function to clear the interval when component unmounts
     return () => clearInterval(interval);
-  }, []); // Empty dependency array to run effect only once when component mounts
-
-  // Define custom track and thumb styles
-  const customStyle = {
-    track: {
-      height: 4,
-      borderRadius: 2,
-    },
-    thumb: {
-      width: 30,
-      height: 30,
-      borderRadius: 30 / 2,
-      backgroundColor: 'white',
-      borderColor: '#30a935',
-      borderWidth: 2,
-    }
-  };
+  }, [sliderValue]);
 
   return (
     <View style={styles.container}>
@@ -45,11 +28,7 @@ export default function ScanFaceScreen() {
         value={sliderValue}
         minimumValue={0}
         maximumValue={100}
-        trackStyle={customStyle.track} // Pass the custom track style
-        thumbStyle={customStyle.thumb} // Pass the custom thumb style
-        minimumTrackTintColor='#1fb28a'
-        maximumTrackTintColor='#d3d3d3'
-        thumbTintColor='#1a9274'
+        minimumTrackTintColor='#66ff66' // Light green color
       />
       <Text>Slider that automatically slides from 0 to 100</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
