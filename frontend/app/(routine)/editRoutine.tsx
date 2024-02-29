@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, FlatList, TouchableHighlight, Modal, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, FlatList, TouchableHighlight, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
 import DropdownComponent from '@/components/Dropdown';
@@ -75,9 +75,15 @@ export default function EditRoutineScreen() {
 
     const handleSelectProductType = (value) => {
         setProductType(value);
-        console.log("productType:", value);
+        // console.log("productType:", value);
     }
-
+    const handleSubmit = () => {
+        console.log('Product Type:', productType);
+        console.log('Product Name:', productName);
+        console.log('Morning Routine:', morningRoutine);
+        console.log('Evening Routine:', eveningRoutine);
+        console.log('Frequency:', selectedDays);
+    }
     return (
         <View style={styles.container}>
             <Modal visible={openModal} onRequestClose={() => { setOpenModal(false) }} animationType='slide' transparent={true}>
@@ -111,7 +117,7 @@ export default function EditRoutineScreen() {
                             <TouchableHighlight onPress={() => setOpenModal(false)}>
                                 <Text>Cancel</Text>
                             </TouchableHighlight>
-                            <TouchableHighlight >
+                            <TouchableHighlight onPress={handleSubmit} style={{backgroundColor:'#3E5B20', borderRadius: 48, color: '#FFFFFF'}}>
                                 <Text>Add</Text>
                             </TouchableHighlight>
                         </View>
@@ -121,12 +127,12 @@ export default function EditRoutineScreen() {
             <View style={{ display: 'flex', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={styles.subTitle}>Products list</Text>
                 <View style={{ paddingTop: 50, display: 'flex', flexDirection: 'row', paddingRight: 30, alignItems: 'center' }}>
-                    <TouchableHighlight onPress={() => setOpenModal(true)}>
+                    <TouchableWithoutFeedback onPress={() => setOpenModal(true)}>
                         <Image source={require('../../assets/images/add.png')} style={{ marginRight: 15 }}></Image>
-                    </TouchableHighlight>
-                    <TouchableHighlight>
+                    </TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback>
                         <Image source={require('../../assets/images/list.png')}></Image>
-                    </TouchableHighlight>
+                    </TouchableWithoutFeedback>
                 </View>
             </View>
             <FlatList
