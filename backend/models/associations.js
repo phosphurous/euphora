@@ -7,6 +7,7 @@ const Routine = require('./routine');
 const Product = require('./product');
 const RoutineLog = require('./routineLog');
 const SkinAnalysis = require('./skinAnalysis');
+const Review = require('./review');
 
 const initAssociations = () => {
     // one account --> one profile
@@ -36,6 +37,14 @@ const initAssociations = () => {
     // one profile --> many skin_analysis
     Profile.hasMany(SkinAnalysis, {foreignKey: "profile_id"})
     SkinAnalysis.belongsTo(Profile, {foreignKey: "profile_id"})
+
+    // one profile --> many reviews
+    Profile.hasMany(Review, {foreignKey: "profile_id"})
+    Review.belongsTo(Profile, {foreignKey: "profile_id"})
+
+    // one product --> many reviews
+    Product.hasMany(Review, {foreignKey: "product_id"})
+    Review.belongsTo(Product, {foreignKey: "product_id"})
 }
 
 module.exports = initAssociations;
