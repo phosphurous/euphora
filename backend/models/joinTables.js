@@ -2,16 +2,24 @@ const {DataTypes} = require("sequelize");
 const {sequelize} = require("../config/database");
 
 const ProfileIngredient = sequelize.define(
-    "ProfileIngredient", 
+    "profile_ingredient", 
     {},
     {
         timestamps : false,
-        tableName: "profile_ingredient"
+    }
+)
+
+const IngredientProduct = sequelize.define(
+    "IngredientProduct", 
+    {},
+    {
+        timestamps : false,
+        tableName: "IngredientProduct"
     }
 )
 
 const RoutineProduct = sequelize.define(
-  "RoutineProduct",
+  "routine_product",
     {
         routine_product_id: {
             type: DataTypes.INTEGER,
@@ -21,8 +29,7 @@ const RoutineProduct = sequelize.define(
     },
     {
         timestamps : false,
-        tableName: "routine_product"
     }
 )
 
-module.exports = { ProfileIngredient, RoutineProduct }
+module.exports = { ProfileIngredient, RoutineProduct, IngredientProduct }
