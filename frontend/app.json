@@ -31,7 +31,13 @@
     },
     "plugins": [
       "expo-router",
-      "expo-camera"
+      "expo-camera",
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/PlayfairDisplay-SemiBold.ttf"]
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

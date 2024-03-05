@@ -6,7 +6,8 @@ import { Text, View } from '@/components/Themed';
 export default function SpecifyConditionScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Specify Condition</Text>
+      <Text style={{ fontFamily: 'PlayfairDisplay-SemiBold' }}>Hi Anna,</Text>
+      <Text style={styles.title}>Tell us about your skin conditions and allergies</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       <EditScreenInfo path="app/(tabs)/index.tsx" />
     </View>
@@ -19,6 +20,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+//   header: {
+//     fontSize: 20,
+//     fontFamily: 'Playfair-SemiBold',
+//   },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
