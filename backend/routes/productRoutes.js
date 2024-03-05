@@ -4,6 +4,7 @@ const router = express.Router();
 const productController = require('../controllers/productController');
 
 //UNAUTHENTICATED ROUTES
+router.get('/:id/get-ingredients-of', productController.getIngredientsOfProducts);
 router.get('/', productController.getAllProducts);
 router.post('/', productController.addProduct);
 router.delete('/:id', productController.deleteProduct);

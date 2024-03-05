@@ -26,6 +26,7 @@
     "ocr-space-api-wrapper": "^2.3.0",
     "pg": "^8.11.3",
     "sequelize": "^6.32.0",
+    "supabase": "^1.148.6",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
