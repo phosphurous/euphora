@@ -13,10 +13,10 @@ const Product = sequelize.define(
             type : DataTypes.STRING,
             allowNull : false,
         },
-        type: {
-            type : DataTypes.STRING,
-            allowNull : false,
-        },
+        // type: {
+        //     type : DataTypes.STRING,
+        //     allowNull : false,
+        // },
         image : {
             type : DataTypes.STRING,
             allowNull : true,
