@@ -60,15 +60,6 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="scan2"
-        options={{
-          title: "Scan2",
-          tabBarIcon: ({ color }) => <Image
-          source={require('../../assets/images/scan.png')}
-          style={{ width: 20, height: 20 }} />,
-        }}
-      />
-      <Tabs.Screen
         name="routine"
         options={{
           title: "Routine",
