@@ -23,7 +23,17 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     'SpaceMono': require('../assets/fonts/SpaceMono-Regular.ttf'),
+    'PlayfairDisplay-Regular': require('../assets/fonts/PlayfairDisplay-Regular.ttf'),
+    'PlayfairDisplay-Medium': require('../assets/fonts/PlayfairDisplay-Medium.ttf'),
     'PlayfairDisplay-SemiBold': require('../assets/fonts/PlayfairDisplay-SemiBold.ttf'),
+    'PlayfairDisplay-Bold': require('../assets/fonts/PlayfairDisplay-Bold.ttf'),
+    'PlayfairDisplay-ExtraBold': require('../assets/fonts/PlayfairDisplay-ExtraBold.ttf'),
+    'Inter-Light': require('../assets/fonts/Inter-Light.ttf'),
+    'Inter-Regular': require('../assets/fonts/Inter-Regular.ttf'),
+    'Inter-Medium': require('../assets/fonts/Inter-Medium.ttf'),
+    'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
+    'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
+    'Inter-ExtraBold': require('../assets/fonts/Inter-ExtraBold.ttf'),
     ...FontAwesome.font,
   });
 
