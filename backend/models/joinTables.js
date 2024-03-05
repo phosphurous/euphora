@@ -9,6 +9,15 @@ const ProfileIngredient = sequelize.define(
     }
 )
 
+const IngredientProduct = sequelize.define(
+    "IngredientProduct", 
+    {},
+    {
+        timestamps : false,
+        tableName: "IngredientProduct"
+    }
+)
+
 const RoutineProduct = sequelize.define(
   "routine_product",
     {
@@ -23,4 +32,4 @@ const RoutineProduct = sequelize.define(
     }
 )
 
-module.exports = { ProfileIngredient, RoutineProduct }
+module.exports = { ProfileIngredient, RoutineProduct, IngredientProduct }
