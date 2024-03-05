@@ -21,10 +21,10 @@ const Product = sequelize.define(
             type : DataTypes.STRING,
             allowNull : true,
         },
-        date_added : {
-            type : DataTypes.DATEONLY,
-            allowNull: false,
-        }
+        // date_added : {
+        //     type : DataTypes.DATEONLY,
+        //     allowNull: false,
+        // }
     },
     {
       timestamps: false,
