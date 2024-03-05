@@ -2,15 +2,15 @@ const {DataTypes} = require("sequelize");
 const {sequelize} = require("../config/database");
 
 const ProfileIngredient = sequelize.define(
-    "ProfileIngredient", 
+    "profile_ingredient", 
     {},
     {
-        timestamps : false
+        timestamps : false,
     }
 )
 
 const RoutineProduct = sequelize.define(
-  "RoutineProduct",
+  "routine_product",
     {
         routine_product_id: {
             type: DataTypes.INTEGER,
@@ -19,7 +19,7 @@ const RoutineProduct = sequelize.define(
         }
     },
     {
-        timestamps : false
+        timestamps : false,
     }
 )
 
