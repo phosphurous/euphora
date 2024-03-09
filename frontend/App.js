@@ -10,3 +10,6 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+// run prettier:
+// npx prettier . --write

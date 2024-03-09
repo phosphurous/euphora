@@ -1,9 +1,10 @@
 // SearchBar.js
+// reference: https://www.scaler.com/topics/react-native-search-bar/
 import React from "react";
 import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
 
-const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setCLicked }) => {
+const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
   return (
     <View style={styles.container}>
       <View
@@ -13,9 +14,9 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setCLicked }) => {
       >
         <Feather
           name="search"
-          size={20}
-          color="black"
-          style={{ marginLeft: 1 }}
+          size={18}
+          color="#131214"
+          style={{ marginLeft: 10 }}
         />
 
         <TextInput
@@ -27,22 +28,10 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setCLicked }) => {
             setClicked(true);
           }}
         />
-
-        {clicked && (
-          <Entypo
-            name="cross"
-            size={20}
-            color="black"
-            style={{ padding: 1 }}
-            onPress={() => {
-              setSearchPhrase("");
-            }}
-          />
-        )}
       </View>
 
       {clicked && (
-        <View>
+        <View style={{ marginLeft: 10 }}>
           <Button
             title="Cancel"
             onPress={() => {
@@ -57,35 +46,33 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setCLicked }) => {
 };
 export default SearchBar;
 
-// styles
 const styles = StyleSheet.create({
   container: {
     margin: 15,
-    justifyContent: "flex-start",
+    justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
-    width: "90%",
+    width: "95%",
   },
   searchBar__unclicked: {
     padding: 10,
     flexDirection: "row",
     width: "95%",
-    backgroundColor: "#d9dbda",
+    backgroundColor: "#F2F4F5",
     borderRadius: 15,
     alignItems: "center",
   },
   searchBar__clicked: {
-    padding: 10,
+    padding: 8,
     flexDirection: "row",
-    width: "80%",
-    backgroundColor: "#d9dbda",
-    borderRadius: 15,
+    width: "75%",
+    backgroundColor: "#F2F4F5",
+    borderRadius: 12,
     alignItems: "center",
-    justifyContent: "space-evenly",
   },
   input: {
-    fontSize: 20,
-    marginLeft: 10,
-    width: "90%",
+    fontSize: 18,
+    marginLeft: 20,
+    width: "80%",
   },
 });
