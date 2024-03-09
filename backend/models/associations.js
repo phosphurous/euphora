@@ -1,8 +1,8 @@
 const Account = require('./account');
 const Profile = require('./profile')
 const Ingredient = require('./ingredient')
-const Alias = require('./alias')
-const {ProfileIngredient, RoutineProduct} = require('./joinTables');
+// const Alias = require('./alias')
+const {ProfileIngredient, RoutineProduct, IngredientProduct} = require('./joinTables');
 const Routine = require('./routine');
 const Product = require('./product');
 const RoutineLog = require('./routineLog');
@@ -22,9 +22,9 @@ const initAssociations = () => {
     Profile.hasMany(Routine, {foreignKey: "profile_id"})
     Routine.belongsTo(Profile, {foreignKey: "profile_id"})
 
-    // one ingredient --> many alias
-    Alias.belongsTo(Ingredient, {foreignKey:"ingredient_id"})
-    Ingredient.hasMany(Alias, {foreignKey:"ingredient_id"})
+    // many product --> many ingredient
+    Product.belongsToMany(Ingredient, {through: IngredientProduct, foreignKey:"product_id"}) 
+    Ingredient.belongsToMany(Product, {through: IngredientProduct, foreignKey:"ingredient_id"})
 
     // many product --> many routines
     Product.belongsToMany(Routine, {through : RoutineProduct, foreignKey:"product_id", timestamps:false})

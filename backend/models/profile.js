@@ -9,6 +9,14 @@ const Profile = sequelize.define(
             allowNull: false,
             autoIncrement: true,
         },
+        condition : {
+            type : DataTypes.ARRAY(DataTypes.STRING),
+            allowNull : false,
+        },
+        skin_type: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
     },
     {
       timestamps: false,

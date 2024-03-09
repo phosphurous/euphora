@@ -4,65 +4,70 @@ const Profile = require("../models/profile");
 const Routine = require("../models/routine");
 const RoutineLog = require("../models/routineLog");
 
-const addRoutine = async (req, res) => {
-    // const account = req.account;
+const addRoutine = async (req) => {
+    
+    const accountID = req.body.accountID;
 
-    try {
-        if (req.body === undefined || Object.keys(req.body).length === 0) {
-          return res.status(400).json({ message: "Error. Fields are empty."});
-        }     
-        
-        const accountID = req.body.account_id;
+    const getProfile = await Profile.findOne({ where: { account_id : accountID }, raw: true });
 
-        // const getAccount = await Account.findOne({ where: { account_id : account.account_id }, raw: true });
-        // const getProfile = await Profile.findOne({ where: { account_id : account_id }, raw: true });
+    /** Routine Table */
+    const routineName = "default_" + Date.now();
+    //Morning / Night
+    const routineType = req.body.routineType;
+    const routineStart = req.body.startDate;
+    const routineEnd = req.body.endDate;
+    //Day of month
+    const frequency = req.body.frequency;
 
-        /** Routine Table */
-        const routineName = req.body.routineName;
-        //Morning / Night
-        const routineType = req.body.routineType;
-        const routineStart = req.body.startDate;
-        const routineEnd = req.body.endDate;
-        //Day of month
-        const frequency = req.body.frequency;
+    const createdRoutineObj = await Routine.create({
+        name: routineName, type: routineType, start_date: routineStart,
+        end_date: routineEnd, frequency: frequency, profile_id: getProfile.profile_id });
 
-        await Routine.create({
-            name: routineName, type: routineType, start_date: routineStart,
-            end_date: routineEnd, frequency: frequency, profile_id: accountID });
-
-        return res.status(201).json({ message: "Successfully created for Routine."});
-        
-    } catch (err) {
-        console.log(err);
-        return res.status(500).json({ error: err });
-    }
+    return createdRoutineObj;
 }
 
 //this is for linking both
-const addProductToRoutine = async (req, res) => {
+const addProductToRoutine = async (routineID, productID) => {
     try {
-
-        if (req.body === undefined || Object.keys(req.body).length === 0) {
-          return res.status(400).json({ message: "Error. Fields are empty."});
-        }
-        
-        const routineID = req.body.routineID;
-        const productID = req.body.productID;
-
         const createdRoutineProduct = await RoutineProduct.create({
             product_id: productID, routine_id: routineID
         });
 
-        console.log(createdRoutineProduct);
-        
         const routineProductDate = new Date().toJSON().slice(0, 10);
         await RoutineLog.create({
             routine_product_id: createdRoutineProduct.routine_product_id, date: routineProductDate,
             checklist: 0
         });
 
-        return res.status(201).json({ message: "Successfully created a routine product."});
-        
+        return true;
+
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+}
+
+const addAdditionalProductToRoutine = async (req, res) => {
+    try {
+
+        const routineID = req.body.routineID;
+        const productID = req.body.productID;
+
+        for (const eachProdID of productID) {
+            const createdRoutineProduct = await RoutineProduct.create({
+                routine_id: routineID,
+                product_id: eachProdID
+            });
+
+            const routineProductDate = new Date().toJSON().slice(0, 10);
+            await RoutineLog.create({
+                routine_product_id: createdRoutineProduct.routine_product_id, date: routineProductDate,
+                checklist: 0
+            });
+        }
+
+        return res.status(201).json({ message: "Successfully added each product to routine." });
+
     } catch (err) {
         console.log(err);
         return res.status(500).json({ error: err });
@@ -138,4 +143,4 @@ const deleteRoutine = async (req, res) => {
     }
 }
 
-module.exports = { addRoutine, addProductToRoutine, getAllRoutineLog, updateRoutineProductLog, deleteRoutine };
+module.exports = { addRoutine, addProductToRoutine, addAdditionalProductToRoutine, getAllRoutineLog, updateRoutineProductLog, deleteRoutine };
