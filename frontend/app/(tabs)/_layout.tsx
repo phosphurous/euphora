@@ -21,11 +21,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        // Disable the static render of the header on web
-        // to prevent a hydration error in React Navigation v6.
-        //         headerShown: useClientOnlyValue(false, true),
-        headerShown: false,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint, headerShown: false,
       }}
     >
       <Tabs.Screen
@@ -35,22 +31,8 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Image
               source={require("../../assets/images/home.png")}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, }}
             />
-          ),
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
           ),
         }}
       />
@@ -85,7 +67,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Image
               source={require("../../assets/images/calendar.png")}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, }}
             />
           ),
         }}
@@ -97,7 +79,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Image
               source={require("../../assets/images/profile.png")}
-              style={{ width: 20, height: 20 }}
+              style={{ width: 20, height: 20, }}
             />
           ),
         }}

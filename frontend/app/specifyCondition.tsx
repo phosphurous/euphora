@@ -25,7 +25,13 @@ const SpecifyConditionScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={{ fontFamily: "PlayfairDisplay-SemiBold", fontSize: 40 }}>
+      <Text
+        style={{
+          fontFamily: "PlayfairDisplay-SemiBold",
+          fontSize: 35,
+          marginTop: 40,
+        }}
+      >
         Hi Anna,
       </Text>
       <Text style={styles.title}>
@@ -43,7 +49,11 @@ const SpecifyConditionScreen = () => {
           data={fakeData}
           setClicked={setClicked}
         />
-      ) : null}
+      ) : (
+        <Text style={styles.body}>
+          I don't have any skin conditions or allergies.
+        </Text>
+      )}
     </View>
   );
 };
@@ -54,12 +64,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
   },
   title: {
-    marginTop: 20,
+    marginTop: 10,
+    marginBottom: 10,
     fontSize: 20,
     textAlign: "center",
+  },
+  body: {
+    fontSize: 14,
+    color: "#A6A2A2",
+    textAlign: "center",
+    position: "absolute",
+    bottom: 100,
   },
   separator: {
     marginVertical: 30,

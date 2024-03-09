@@ -23,7 +23,7 @@ export default function TabOneScreen() {
       <Text style={styles.body}>Rediscover Your Skincare Products</Text>
       <Link href="../specifyCondition" asChild>
         <TouchableHighlight style={styles.button} underlayColor="#5d680e">
-          <Text style={styles.buttonText}>Specify Condition</Text>
+          <Text style={styles.buttonText}>Specify Your Skin Condition</Text>
         </TouchableHighlight>
       </Link>
     </View>
