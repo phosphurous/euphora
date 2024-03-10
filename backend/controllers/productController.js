@@ -3,6 +3,7 @@ const Product = require("../models/product");
 const Profile = require("../models/profile");
 const {supabase} = require('../config/database')
 const {ProfileIngredient} = require('../models/joinTables')
+const stringSimilarity = require("string-similarity");
 
 //This is for user to add into the Routine
 const getAllProducts = async (req, res) => {
@@ -16,7 +17,7 @@ const getAllProducts = async (req, res) => {
         return res.status(500).json({ error: err });
     }
 }
-const getIngredientsOfProducts = async (req, res) => {
+const getConfidenceOfIngredientsInProducts = async (req, res) => {
     const product_name = req.query.product_name
     const profile_id = req.params.id;
 
@@ -33,8 +34,6 @@ const getIngredientsOfProducts = async (req, res) => {
             return res.status(400).json({ message: "Product not found, try another product"} );
           }
           const {Ingredients:ingredients} = all_ingredients_and_product
-        //   const arr_of_ingredient_id = ingredients.map(i => i.ingredient_id)
-          const arr_of_ingredient_names = ingredients.map(i => i.ingredient_name)
           const allergic_ingredients = await getAllergies(profile_id)
           console.log(allergic_ingredients)
           const output = [] 
@@ -73,32 +72,14 @@ const allergyConfidenctGivenIngredient = async(ingredient_id, allergic_ingredien
     if(definitelyHasAllergy){
         return 1;
     }
-
-    // const {ingredient_name} = await Ingredient.findOne({
-    //     where : {
-    //         ingredient_id : ingredient_id
-    //     }
-    // })
-    // const words = ingredient_name.split(' ');
-    // const query_strong = words.join(' & ')
-    // const query_weak = words.join(' | ')
-
-    // // try to get a list of similar ingredients and we can take the max (avg(similarity(1allergy, [ingredients])) )
-    // const { data:strong_result, error:strong_error } = await supabase.from('ingredient')
-    //     .select().textSearch('ingredient_name',query_strong)
-    // const { data:weak_result, error:weak_error } = await supabase.from('ingredient')
-    //     .select().textSearch('ingredient_name', query_weak)
-    // if(strong_error){
-    //     return null;
-    // }
-    // else if(strong_result.length < 1){
-    //     if(weak_error){
-    //         return null;
-    //     }
-    //     return weak_result;
-    // }
-    // return strong_result
-    return 0;
+    console.log(allergic_ingredients)
+    const arr_of_ingredient_names = allergic_ingredients.map(i => i.name)
+    const {ingredient_name} = await Ingredient.findOne({
+        where : {ingredient_id: ingredient_id}
+    })
+    const {bestMatch}  = await stringSimilarity.findBestMatch(ingredient_name, arr_of_ingredient_names);
+    console.log("match", bestMatch)
+    return bestMatch.rating;
 }
 
 //for photo upload
@@ -176,4 +157,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-module.exports = { getAllProducts, addProduct, deleteProduct, getIngredientsOfProducts };
+module.exports = { getAllProducts, addProduct, deleteProduct, getConfidenceOfIngredientsInProducts };

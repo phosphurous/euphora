@@ -57,7 +57,6 @@ sequelize
   .sync({ alter: true })
   .then(() => {
     console.log("[SYSTEM] All models synchronized successfully!");
-
     seedData();
   })
   .catch((err) => {
