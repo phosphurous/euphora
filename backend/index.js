@@ -29,6 +29,7 @@ app.use(API_VER + '/example', require('./routes/exampleRoutes'))
 app.use(API_VER + '/profile', require('./routes/profileRoutes'))
 app.use(API_VER + '/routines', require('./routes/routineRoutes'))
 app.use(API_VER + '/products', require('./routes/productRoutes'))
+app.use(API_VER + '/ingredients', require('./routes/ingredientRoutes'))
 
 app.use('/ocr', require('./routes/ocrRoutes'))
 app.use('/', (req, res) => res.status(200).json("all good :)"))
