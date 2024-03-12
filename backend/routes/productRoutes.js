@@ -5,7 +5,7 @@ const productController = require('../controllers/productController');
 
 //UNAUTHENTICATED ROUTES
 
-// http://localhost:3000/api/v1/products/2/confidence?product_name=AmorePacific Age Spot Brightening Pen
+// http://localhost:3000/api/v1/products/1/confidence?product_name=AmorePacific Age Spot Brightening Pen
 router.get('/:id/confidence', productController.getConfidenceOfIngredientsInProducts);
 
 router.get('/', productController.getAllProducts);
