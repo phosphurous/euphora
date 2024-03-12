@@ -11,11 +11,11 @@ const Profile = sequelize.define(
         },
         condition : {
             type : DataTypes.ARRAY(DataTypes.STRING),
-            allowNull : false,
+            allowNull : true,
         },
         skin_type: {
             type: DataTypes.STRING,
-            allowNull: false,
+            allowNull: true,
         },
     },
     {
