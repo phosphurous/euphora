@@ -1,4 +1,9 @@
+const Ingredient = require("../models/ingredient");
 const Product = require("../models/product");
+const Profile = require("../models/profile");
+const {supabase} = require('../config/database')
+const {ProfileIngredient} = require('../models/joinTables')
+const stringSimilarity = require("string-similarity");
 const { addRoutine, addProductToRoutine } = require("./routineController");
 
 //This is for user to add into the Routine
@@ -12,6 +17,70 @@ const getAllProducts = async (req, res) => {
         console.log(err);
         return res.status(500).json({ error: err });
     }
+}
+const getConfidenceOfIngredientsInProducts = async (req, res) => {
+    const product_name = req.query.product_name
+    const profile_id = req.params.id;
+
+    try {   
+        const all_ingredients_and_product = await Product.findOne({ 
+            where : { name : product_name},
+            include: [
+                {
+                    model : Ingredient,
+                }
+            ]
+          });
+          if(all_ingredients_and_product == null){
+            return res.status(400).json({ message: "Product not found, try another product"} );
+          }
+          const {Ingredients:ingredients} = all_ingredients_and_product
+          const allergic_ingredients = await getAllergies(profile_id)
+          console.log(allergic_ingredients)
+          const output = [] 
+          for (const {ingredient_id, ingredient_name} of ingredients) {
+                const confidence = await allergyConfidenctGivenIngredient(ingredient_id, allergic_ingredients)
+                console.log(ingredient_id, confidence)
+                output.push({name: ingredient_name, confidence: confidence})
+          }
+        return res.status(200).json({ message: "Successfully retrieved all ingredients of product.",  output} );
+
+    } catch (err) {
+        return res.status(500).json({ error: err });
+    }
+}
+
+const getAllergies = async(profile_id) => {
+    const {Ingredients:allergies} = await Profile.findOne({
+        where : {profile_id : profile_id},
+        include : [
+            {model: Ingredient}
+        ]
+    })
+    allergic_ingredients = allergies.map(a => {
+        return {id: a["ingredient_id"], name:a["ingredient_name"]}
+    })
+    return allergic_ingredients
+}
+
+const allergyConfidenctGivenIngredient = async(ingredient_id, allergic_ingredients) => {
+    if (allergic_ingredients.length < 1){
+        // no allergies
+        return 0
+    }
+    // boolean if allergy has index == ingredient_id
+    const definitelyHasAllergy = allergic_ingredients.some((a) => a.id == ingredient_id)
+    if(definitelyHasAllergy){
+        return 1;
+    }
+    console.log(allergic_ingredients)
+    const arr_of_ingredient_names = allergic_ingredients.map(i => i.name)
+    const {ingredient_name} = await Ingredient.findOne({
+        where : {ingredient_id: ingredient_id}
+    })
+    const {bestMatch}  = await stringSimilarity.findBestMatch(ingredient_name, arr_of_ingredient_names);
+    console.log("match", bestMatch)
+    return bestMatch.rating;
 }
 
 //for photo upload
@@ -97,4 +166,4 @@ const deleteProduct = async (req, res) => {
     }
 }
 
-module.exports = { getAllProducts, addProduct, deleteProduct };
+module.exports = { getAllProducts, addProduct, deleteProduct, getConfidenceOfIngredientsInProducts };

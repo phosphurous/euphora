@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const {sequelize} = require('../config/database');
 
+
 const Ingredient = sequelize.define(
     'Ingredient', {
         ingredient_id : {
@@ -15,6 +16,10 @@ const Ingredient = sequelize.define(
             // unique: true,
             allowNull: false,
         },
+        embedding : {
+            type: DataTypes.VECTOR(384),
+            allowNull : true,
+        }
         // is_common_allergen : {
         //     type: DataTypes.BOOLEAN,
         //     defaultValue: false,
