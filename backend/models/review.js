@@ -17,7 +17,7 @@ const Review = sequelize.define(
             type : DataTypes.INTEGER,
             allowNull: false,
         },
-        isEffective: {
+        negativeReaction: {
             type : DataTypes.BOOLEAN,
             allowNull: false
         }
