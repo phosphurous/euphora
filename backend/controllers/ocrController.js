@@ -1,13 +1,11 @@
 const { ocrSpace } = require('ocr-space-api-wrapper');
-const Ingredient = require('../models/ingredient');
 
-async function img_to_text (req, res) {
+async function img_to_text (buffer, mimetype) {
     const possible_prefix = ["ingredient", "ingredients", "ingredients:", "ingredient:"]
     let regexPattern = new RegExp(".*?(" + possible_prefix.join("|") + ")");
 
   try {
-    const {buffer, mimetype} = req.file
-    console.log(req.file)
+   
     const base64String =  buffer.toString('base64');
     const dataUrl = `data:${mimetype};base64,${base64String}`;
     // console.log(dataUrl)
@@ -30,14 +28,15 @@ async function img_to_text (req, res) {
     output_text = output_text.replace(/\r\n/g, ""); 
 
     // split based on '.' or ',' and remove whitespaces preceding and trailing it
-    const ingredients = output_text.split(/[,.]/).map(s => s.trim());
+    const ingredients = output_text.split(/[,.:]/).map(s => s.trim());
 
-    return res.status(200).json({data : ingredients});
+    // return res.status(200).json({data : ingredients});
+    return ingredients
 
-    // return res.status(200).json({data : "empty"});
 } catch (error) {
     console.error(error);
-    return res.status(200).json({data : "empty"});
+    // return res.status(200).json({data : "empty"});
+    return null;
   }
 }
 async function get_text (req, res) {
