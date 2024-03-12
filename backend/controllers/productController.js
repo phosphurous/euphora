@@ -116,12 +116,12 @@ const addProduct = async (req, res) => {
 
   const getReviewsBySkinCondition = async (req, res) => {
     const productID = req.params.id;
-    const { condition } = req.body;
+    const { conditions } = req.body;
     try {
       const reviews = await Review.findAll({
         include: [{
           model: Profile,
-          where: { condition: condition }
+          where: { condition: { [Op.in]: conditions } }
         }, {
           model: Product,
           where: { product_id: productID }
