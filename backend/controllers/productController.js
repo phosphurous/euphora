@@ -5,7 +5,6 @@ const {supabase} = require('../config/database')
 const {ProfileIngredient} = require('../models/joinTables')
 const stringSimilarity = require("string-similarity");
 const { addRoutine, addProductToRoutine } = require("./routineController");
-const Profile = require("../models/profile");
 const Review = require("../models/review");
 const { Op } = require('sequelize');
 
