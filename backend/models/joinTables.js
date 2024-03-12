@@ -11,7 +11,13 @@ const ProfileIngredient = sequelize.define(
 
 const IngredientProduct = sequelize.define(
     "IngredientProduct", 
-    {},
+    {
+        ingredient_product_id: {
+            type: DataTypes.INTEGER,
+            primaryKey: true,
+            autoIncrement: true // Assuming you want an auto-incrementing primary key
+        }
+    },
     {
         timestamps : false,
         tableName: "IngredientProduct"
