@@ -10,7 +10,7 @@ const Profile = sequelize.define(
             autoIncrement: true,
         },
         condition : {
-            type : DataTypes.STRING,
+            type : DataTypes.ARRAY(DataTypes.STRING),
             allowNull : false,
         },
         skin_type: {
