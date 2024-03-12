@@ -17,7 +17,9 @@ const is_allergic = async(req,res) => {
     const ingredient_name = req.query.ingredient_name
     const profile_id = req.params.id;
     const score = await get_allergy_confidence(profile_id, ingredient_name)
-
+    if (score === null){
+        return res.status(400).json({error: "profile_id not found"});
+    }
     return res.status(200).json({...score});
 }
 
@@ -62,7 +64,10 @@ const get_similar_ingredients = async(ingredient_name) => {
       return ingredient;
 }
 const get_allergy_confidence = async (profile_id, ingredient_name) => {
-    const allergic_ingredients = await getAllergies(profile_id)
+    const allergic_ingredients = await getAllergies(profile_id);
+    if(allergic_ingredients === null){
+        return null;
+    }
     const arr_of_ingredient_names = allergic_ingredients.map(i => i.name)
     console.log(allergic_ingredients)
     if (allergic_ingredients.length < 1){
@@ -84,12 +89,16 @@ const get_allergy_confidence = async (profile_id, ingredient_name) => {
 }
 
 const getAllergies = async(profile_id) => {
-    const {Ingredients:allergies} = await Profile.findOne({
+    const profile = await Profile.findOne({
         where : {profile_id : profile_id},
         include : [
             {model: Ingredient}
         ]
     })
+    if(!profile){
+        return null;
+    }
+    const {Ingredients:allergies} = profile;
     allergic_ingredients = allergies.map(a => {
         return {id: a["ingredient_id"], name:a["ingredient_name"]}
     })
