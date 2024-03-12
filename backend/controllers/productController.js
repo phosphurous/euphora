@@ -199,7 +199,7 @@ const addProduct = async (req, res) => {
       const reviews = await Review.findAll({
         include: [{
           model: Profile,
-          where: { condition: { [Op.in]: conditions } }
+          where: { condition: { [Op.contains]: conditions } }
         }, {
           model: Product,
           where: { product_id: productID }
