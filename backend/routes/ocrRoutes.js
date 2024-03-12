@@ -22,6 +22,6 @@ var upload = multer({
 
 //UNAUTHENTICATED ROUTES
 router.get('/get-text', get_text);
-router.post('/img-to-text', upload ,img_to_text);
+// router.post('/img-to-text', upload ,img_to_text);
 
 module.exports = router;

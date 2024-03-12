@@ -1,3 +1,4 @@
+const {img_to_text} = require('./ocrController.js');
 const Ingredient = require('../models/ingredient');
 const {supabase} = require('../config/database')
 const {generatEmbeddings} = require('../utils/matching_helpers')
@@ -20,6 +21,32 @@ const is_allergic = async(req,res) => {
     return res.status(200).json({...score});
 }
 
+const get_allergy_confidence_of_ingredient_list_in_image = async(req,res) => {
+    const {buffer, mimetype} = req.file
+    const profile_id = req.params.id;
+
+    console.log(req.file)
+
+    const ingredient_list = await img_to_text(buffer, mimetype);
+    if(!ingredient_list){
+        return res.status(400).json({message:"invalid image"});
+    }
+    const output = []
+    // for each ingredient here check if is allergic
+    // can reduce time by taking out extracting the discovery of allergy outside
+    // limit the match to only top 5 ingredients?
+    
+    try {
+        for (const ingredient of ingredient_list) {
+            const confidence = await get_allergy_confidence(profile_id, ingredient)
+            console.log(confidence)
+            output.push({ingredient_in_list: ingredient, ...confidence})
+        }
+        return res.status(200).json({output});
+    } catch (error) {
+        return res.status(400).json({error});
+    }
+}
 
 
 
@@ -69,4 +96,4 @@ const getAllergies = async(profile_id) => {
     return allergic_ingredients
 }
 
-module.exports = {similar_ingredients, is_allergic}
+module.exports = {similar_ingredients, is_allergic, get_allergy_confidence_of_ingredient_list_in_image}
