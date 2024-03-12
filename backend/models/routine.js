@@ -25,6 +25,10 @@ const Routine = sequelize.define(
             type : DataTypes.DATEONLY,
             allowNull : true,
         },
+        frequency : {
+            type : DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: false
+        }
     },
     {
       timestamps: false,
