@@ -12,6 +12,6 @@ router.get('/', productController.getAllProducts);
 router.post('/', productController.addProduct);
 router.delete('/:id', productController.deleteProduct);
 router.get('/search', productController.getProductBySearch);
-router.get('/:id/reviews', productController.getReviewsBySkinCondition);
+router.post('/:id/reviews', productController.getReviewsBySkinCondition);
 
 module.exports = router;
