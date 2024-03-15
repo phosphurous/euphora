@@ -68,7 +68,7 @@ const get_allergy_confidence = async (profile_id, ingredient_name) => {
     if(allergic_ingredients === null){
         return null;
     }
-    const arr_of_ingredient_names = allergic_ingredients.map(i => i.name)
+    const arr_of_ingredient_names = allergic_ingredients.map(i => i.name.toLowerCase())
     console.log(allergic_ingredients)
     if (allergic_ingredients.length < 1){
         // no allergies
@@ -78,7 +78,7 @@ const get_allergy_confidence = async (profile_id, ingredient_name) => {
     let max_score = 0;
     let nearest_allergy = null;
     for (const {ingredient_name: i} of similar_ingredients) {
-        const {bestMatch}  = await stringSimilarity.findBestMatch(i, arr_of_ingredient_names);
+        const {bestMatch}  = await stringSimilarity.findBestMatch(i.toLowerCase(), arr_of_ingredient_names);
         if (bestMatch.rating > max_score){
             console.log(bestMatch)
             max_score = bestMatch.rating;
