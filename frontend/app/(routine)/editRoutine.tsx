@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Image, FlatList, TouchableHighlight, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
+import { View, Text, StyleSheet, Image, FlatList, Modal, TextInput, TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
 import React from 'react'
 import { useState, useEffect } from 'react';
 import DropdownComponent from '@/components/Dropdown';
@@ -114,12 +114,12 @@ export default function EditRoutineScreen() {
                             <FrequencyCheckbox label="S" checked={selectedDays.includes('Sunday')} onChange={() => toggleDay('Sunday')} />
                         </View>
                         <View style={{ display: 'flex', justifyContent: 'space-between', flexDirection:'row' }}>
-                            <TouchableHighlight onPress={() => setOpenModal(false)}>
+                            <TouchableOpacity onPress={() => setOpenModal(false)}>
                                 <Text>Cancel</Text>
-                            </TouchableHighlight>
-                            <TouchableHighlight onPress={handleSubmit} style={{backgroundColor:'#3E5B20', borderRadius: 48, color: '#FFFFFF'}}>
-                                <Text>Add</Text>
-                            </TouchableHighlight>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleSubmit} style={{backgroundColor:'#3E5B20', borderRadius: 48, paddingHorizontal: 8, paddingVertical: 4}}>
+                                <Text style={{color: '#FFFFFF'}}>Add</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -149,7 +149,7 @@ export default function EditRoutineScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#FFFFFFF',
+        backgroundColor: '#FFFFFF',
     },
     subTitle: {
         fontSize: 16,

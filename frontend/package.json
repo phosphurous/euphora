@@ -19,6 +19,7 @@
     "@react-navigation/native": "^6.0.2",
     "@types/react": "~18.2.45",
     "adb": "^0.2.0",
+    "axios": "^1.6.7",
     "dayjs": "^1.11.10",
     "expo": "~50.0.4",
     "expo-camera": "~14.0.5",

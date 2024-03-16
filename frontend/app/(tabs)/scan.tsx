@@ -1,7 +1,7 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { Link } from 'expo-router';
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
 
 export default function ScanScreen() {
   return (

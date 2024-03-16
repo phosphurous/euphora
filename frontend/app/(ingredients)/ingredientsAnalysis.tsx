@@ -2,9 +2,8 @@ import { Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-nativ
 import React from 'react'
 import { View } from '@/components/Themed';
 import { useState, useEffect, useRef } from 'react';
-import { TabView, SceneMap } from 'react-native-tab-view';
 import PagerView from 'react-native-pager-view';
-
+import axios from "axios";
 const CircleRisk = ({ circleColor }) => {
     return (
         <TouchableOpacity style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -35,9 +34,34 @@ const data = [
         negativeReaction: 'Can irritate skin',
     }]
 
+type ReviewItemProps = { rating: number, description: string }
+const ReviewItem = ({ rating, description }: ReviewItemProps) => {
+    const getStarImage = (rating: number) => {
+        switch (rating) {
+            case 1:
+                return require('../../assets/images/1stars.png');
+            case 2:
+                return require('../../assets/images/2stars.png');
+            case 3:
+                return require('../../assets/images/3stars.png');
+            case 4:
+                return require('../../assets/images/4stars.png');
+            case 5:
+                return require('../../assets/images/5stars.png');
+            default:
+                return require('../../assets/images/5stars.png'); // Default to 5 stars
+        }
+    };
+    return (
+        <View style={styles.review}>
+            <Text style={{ fontWeight: '700' }}>Beatrice</Text>
+            <Image source={getStarImage(rating)}></Image>
+            <Text>{description}</Text>
+        </View>
+    );
+}
 
-
-export default function Analysis() {
+const Analysis = () => {
     const pagerRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(0);
     const setPage = (page) => {
@@ -46,6 +70,25 @@ export default function Analysis() {
             setCurrentPage(page);
         }
     };
+    const [reviews, setReviews] = useState<ReviewItemProps[]>([]);
+    useEffect(() => {
+        fetchReviews();
+    }, []);
+
+
+    const API_URL = 'http://13.229.232.103:3000/api/v1/products/1/reviews';
+    const fetchReviews = async () => {
+        try {
+            const conditions = ["eczema", "acne"];
+            const requestBody = { conditions };
+            const response = await axios.post(API_URL, requestBody);
+            setReviews(response.data?.data);
+            // console.log(reviews)
+        } catch (error) {
+            console.error("Error fetching data:", error)
+        }
+    };
+
     return (
         <View style={{ flex: 1 }}>
             <Text style={styles.title}>Analysis</Text>
@@ -58,11 +101,11 @@ export default function Analysis() {
                         <Text style={{ fontSize: 16 }}>Product Name</Text>
                     </View>
                 </View>
-                <View style={{ display: 'flex', flexDirection: 'row', backgroundColor:'#E9F4E4', justifyContent:'space-evenly', paddingVertical:5, borderRadius:10 }}>
-                    <TouchableOpacity onPress={() => setPage(0)} style={{display:'flex', alignItems:'center', justifyContent:'center', padding: 5, borderRadius:5, flexBasis:'45%', backgroundColor: currentPage === 0 ?'rgba(255,255,255,1)' : 'rgba(255,255,255,0)'}}>
+                <View style={{ display: 'flex', flexDirection: 'row', backgroundColor: '#E9F4E4', justifyContent: 'space-evenly', paddingVertical: 5, borderRadius: 10 }}>
+                    <TouchableOpacity onPress={() => setPage(0)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, flexBasis: '45%', backgroundColor: currentPage === 0 ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0)' }}>
                         <Text>Ingredients</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setPage(1)} style={{display:'flex', alignItems:'center', justifyContent:'center', padding: 5, borderRadius:5, flexBasis:'45%', backgroundColor:currentPage === 1 ?'rgba(255,255,255,1)' : 'rgba(255,255,255,0)'}}>
+                    <TouchableOpacity onPress={() => setPage(1)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 5, borderRadius: 5, flexBasis: '45%', backgroundColor: currentPage === 1 ? 'rgba(255,255,255,1)' : 'rgba(255,255,255,0)' }}>
                         <Text>Reviews</Text>
                     </TouchableOpacity>
                 </View>
@@ -119,47 +162,63 @@ export default function Analysis() {
                         </View>
                         <View>
                             <View style={styles.effectiveness}>
-                                <View >
-                                    <Text>Effectiveness Rating</Text>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={require('../../assets/images/5stars.png')}></Image>
-                                        <Text style={{ marginLeft: 10 }}>2</Text>
+                                <View style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
+                                }}>
+                                    <View>
+                                        <Text>Effectiveness Rating</Text>
+                                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={require('../../assets/images/5stars.png')}></Image>
+                                            <Text style={{ marginLeft: 10 }}>2</Text>
+                                        </View>
+                                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={require('../../assets/images/4stars.png')}></Image>
+                                            <Text style={{ marginLeft: 10 }}>0</Text>
+                                        </View>
+                                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={require('../../assets/images/3stars.png')}></Image>
+                                            <Text style={{ marginLeft: 10 }}>0</Text>
+                                        </View>
+                                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={require('../../assets/images/2stars.png')}></Image>
+                                            <Text style={{ marginLeft: 10 }}>0</Text>
+                                        </View>
+                                        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                                            <Image source={require('../../assets/images/1stars.png')}></Image>
+                                            <Text style={{ marginLeft: 10 }}>1</Text>
+                                        </View>
                                     </View>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={require('../../assets/images/4stars.png')}></Image>
-                                        <Text style={{ marginLeft: 10 }}>0</Text>
-                                    </View>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={require('../../assets/images/3stars.png')}></Image>
-                                        <Text style={{ marginLeft: 10 }}>0</Text>
-                                    </View>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={require('../../assets/images/2stars.png')}></Image>
-                                        <Text style={{ marginLeft: 10 }}>0</Text>
-                                    </View>
-                                    <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                        <Image source={require('../../assets/images/1stars.png')}></Image>
-                                        <Text style={{ marginLeft: 10 }}>1</Text>
+                                    <View>
+                                        <Text style={{ fontWeight: 700, fontSize: 18, color: '#3E5B20' }}>3.7/5.0</Text>
+                                        <Text>3 reviews</Text>
                                     </View>
                                 </View>
-                                <View>
-                                    <Text style={{ fontWeight: 700, fontSize: 18, color: '#3E5B20' }}>3.7/5.0</Text>
-                                    <Text>3 reviews</Text>
+                                <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16 }}>
+                                    <Image source={require('../../assets/images/sadface.png')} style={{ marginHorizontal: 5 }}></Image>
+                                    <Text >33% experienced negative reactions</Text>
                                 </View>
                             </View>
+
                             <Text style={{ fontSize: 18, paddingVertical: 5 }}>Reviews</Text>
-                            <View style={styles.review}>
-                                <Text style={{fontWeight: 700}}>Beatrice</Text>
-                                <Image source={require('../../assets/images/5stars.png')}></Image>
-                                <Text>This product smells really nice. It helps with reducing the size of my pores</Text>
-                            </View>
+                            <FlatList
+                                data={reviews}
+                                renderItem={({ item }) => 
+                                    <ReviewItem rating={item.rating} description={item.description} />
+                                }
+                                // keyExtractor={(item) => item.review_id.toString()}
+                            />
                         </View>
                     </View>
-                </View>
-            </PagerView>
-        </View>
+                </View >
+            </PagerView >
+        </View >
     )
 }
+
+export default Analysis;
 
 const styles = StyleSheet.create({
     container: {
@@ -223,14 +282,13 @@ const styles = StyleSheet.create({
     },
     effectiveness: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         borderColor: '#E9F4E4',
         borderWidth: 2,
         borderRadius: 10,
         padding: 20,
         justifyContent: 'space-between',
         marginVertical: 10,
-        alignItems: 'center'
     },
     review: {
         display: 'flex',
