@@ -34,7 +34,9 @@ const data = [
         negativeReaction: 'Can irritate skin',
     }]
 
-type ReviewItemProps = { rating: number, description: string }
+type ReviewItemProps = {
+    negativeReaction: boolean; rating: number, description: string 
+}
 const ReviewItem = ({ rating, description }: ReviewItemProps) => {
     const getStarImage = (rating: number) => {
         switch (rating) {
@@ -88,6 +90,25 @@ const Analysis = () => {
             console.error("Error fetching data:", error)
         }
     };
+
+    // Calculate number of ratings with 1, 2, 3, 4, 5 stars
+    const ratingsCount: number[] = reviews.reduce((acc, review) => {
+        const { rating } = review;
+        acc[rating - 1] += 1;
+        return acc;
+    }, [0, 0, 0, 0, 0]);
+
+    // Calculate mean rating out of 5
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    const meanRating = totalRating / reviews.length;
+
+    // Calculate percentage of reviews with negative reactions
+    const negativeReactionsCount = reviews.filter(review => review?.negativeReaction).length;
+    const percentageNegativeReactions = (negativeReactionsCount / reviews.length) * 100;
+
+    // console.log("Ratings Count:", ratingsCount);
+    // console.log("Mean Rating:", meanRating);
+    // console.log("Percentage Negative Reactions:", percentageNegativeReactions);
 
     return (
         <View style={{ flex: 1 }}>
@@ -172,43 +193,43 @@ const Analysis = () => {
                                         <Text>Effectiveness Rating</Text>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={require('../../assets/images/5stars.png')}></Image>
-                                            <Text style={{ marginLeft: 10 }}>2</Text>
+                                            <Text style={{ marginLeft: 10 }}>{ratingsCount[4]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={require('../../assets/images/4stars.png')}></Image>
-                                            <Text style={{ marginLeft: 10 }}>0</Text>
+                                            <Text style={{ marginLeft: 10 }}>{ratingsCount[3]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={require('../../assets/images/3stars.png')}></Image>
-                                            <Text style={{ marginLeft: 10 }}>0</Text>
+                                            <Text style={{ marginLeft: 10 }}>{ratingsCount[2]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={require('../../assets/images/2stars.png')}></Image>
-                                            <Text style={{ marginLeft: 10 }}>0</Text>
+                                            <Text style={{ marginLeft: 10 }}>{ratingsCount[1]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={require('../../assets/images/1stars.png')}></Image>
-                                            <Text style={{ marginLeft: 10 }}>1</Text>
+                                            <Text style={{ marginLeft: 10 }}>{ratingsCount[0]}</Text>
                                         </View>
                                     </View>
                                     <View>
-                                        <Text style={{ fontWeight: 700, fontSize: 18, color: '#3E5B20' }}>3.7/5.0</Text>
-                                        <Text>3 reviews</Text>
+                                        <Text style={{ fontWeight: 700, fontSize: 18, color: '#3E5B20' }}>{meanRating.toFixed(1)}/5.0</Text>
+                                        <Text>{reviews.length} reviews</Text>
                                     </View>
                                 </View>
                                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16 }}>
                                     <Image source={require('../../assets/images/sadface.png')} style={{ marginHorizontal: 5 }}></Image>
-                                    <Text >33% experienced negative reactions</Text>
+                                    <Text >{percentageNegativeReactions}% experienced negative reactions</Text>
                                 </View>
                             </View>
 
                             <Text style={{ fontSize: 18, paddingVertical: 5 }}>Reviews</Text>
                             <FlatList
                                 data={reviews}
-                                renderItem={({ item }) => 
+                                renderItem={({ item }) =>
                                     <ReviewItem rating={item.rating} description={item.description} />
                                 }
-                                // keyExtractor={(item) => item.review_id.toString()}
+                            // keyExtractor={(item) => item.review_id.toString()}
                             />
                         </View>
                     </View>
