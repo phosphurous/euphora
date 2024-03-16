@@ -15,27 +15,37 @@ const CircleRisk = ({ circleColor }) => {
     );
 };
 
-const data = [
-    {
-        id: 1,
-        ingredientName: 'Phenoxyethanol',
-        negativeReaction: 'Rash like hives',
-        riskLevel: 'high'
-    },
-    {
-        id: 2,
-        ingredientName: 'Lavandula Angustifolia Oil',
-        negativeReaction: 'Can irritate skin',
-        riskLevel: 'medium'
-    },
-    {
-        id: 3,
-        ingredientName: 'Carum Petroselinum Seed Oil',
-        negativeReaction: 'Can irritate skin',
-    }]
+let highRiskCount = 0;
+let mediumRiskCount = 0;
+let lowRiskCount = 0;
+type IngredientItemProps = {
+    name: string; confidence: number;
+}
+
+const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
+    let backgroundColor, textColor;
+    if (confidence >= 0 && confidence <= 0.3) {
+        backgroundColor = '#FFCACA'; // Reddish background
+        textColor = '#D3180C'; // Red text
+    } else if (confidence > 0.3 && confidence <= 0.7) {
+        backgroundColor = '#FFD7B3'; // Orange background
+        textColor = '#A05E03'; // Orange text
+    } else if (confidence > 0.7 && confidence <= 0.9) {
+        backgroundColor = '#FFFBD7'; // Yellow background
+        textColor = '#A05E03'; // Yellow text
+    } else {
+        backgroundColor = '#FFFFFF'; // Default background
+        textColor = '#000000'; // Default text color
+    }
+
+    return (<View style={[styles.ingredientBox, { backgroundColor }]}>
+        <Text style={{ color: textColor, fontWeight: '700' }}>{name}</Text>
+        <Text>Confidence Level:{confidence.toFixed(3)}</Text>
+    </View>)
+}
 
 type ReviewItemProps = {
-    negativeReaction: boolean; rating: number, description: string 
+    negativeReaction: boolean; rating: number, description: string
 }
 const ReviewItem = ({ rating, description }: ReviewItemProps) => {
     const getStarImage = (rating: number) => {
@@ -73,13 +83,24 @@ const Analysis = () => {
         }
     };
     const [reviews, setReviews] = useState<ReviewItemProps[]>([]);
+    const [ingredients, setIngredients] = useState<IngredientItemProps[]>([])
     useEffect(() => {
         fetchReviews();
+        fetchIngredients();
     }, []);
 
+    const fetchIngredients = async () => {
+        const API_URL = 'http://13.229.232.103:3000/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil'
+        try {
+            const response = await axios.get(API_URL);
+            setIngredients(response.data?.output)
+        } catch (error) {
+            console.error("Error fetching data:", error)
+        }
+    }
 
-    const API_URL = 'http://13.229.232.103:3000/api/v1/products/1/reviews';
     const fetchReviews = async () => {
+        const API_URL = 'http://13.229.232.103:3000/api/v1/products/1/reviews';
         try {
             const conditions = ["eczema", "acne"];
             const requestBody = { conditions };
@@ -90,7 +111,6 @@ const Analysis = () => {
             console.error("Error fetching data:", error)
         }
     };
-
     // Calculate number of ratings with 1, 2, 3, 4, 5 stars
     const ratingsCount: number[] = reviews.reduce((acc, review) => {
         const { rating } = review;
@@ -109,7 +129,20 @@ const Analysis = () => {
     // console.log("Ratings Count:", ratingsCount);
     // console.log("Mean Rating:", meanRating);
     // console.log("Percentage Negative Reactions:", percentageNegativeReactions);
+    const sortedIngredients = ingredients.sort((a, b) => {
+        return a.confidence - b.confidence;
+    });
 
+    const counts = ingredients.reduce((acc, cur) => {
+        if (cur.confidence >= 0 && cur.confidence <= 0.3) {
+            acc.highRiskCount++;
+        } else if (cur.confidence > 0.3 && cur.confidence <= 0.7) {
+            acc.mediumRiskCount++;
+        } else if (cur.confidence > 0.7 && cur.confidence <= 0.9) {
+            acc.lowRiskCount++;
+        }
+        return acc;
+    }, { highRiskCount: 0, mediumRiskCount: 0, lowRiskCount: 0 });
     return (
         <View style={{ flex: 1 }}>
             <Text style={styles.title}>Analysis</Text>
@@ -139,7 +172,7 @@ const Analysis = () => {
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                             <View style={styles.riskLevel}>
-                                <Text style={{ fontSize: 60 }}>1</Text>
+                                <Text style={{ fontSize: 60 }}>{counts.highRiskCount}</Text>
                                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <CircleRisk circleColor={'#ED5B55'} />
                                     <CircleRisk circleColor={'#ED5B55'} />
@@ -149,7 +182,7 @@ const Analysis = () => {
                             </View>
                             <View style={styles.verticalSeparator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
                             <View style={styles.riskLevel}>
-                                <Text style={{ fontSize: 60 }}>2</Text>
+                                <Text style={{ fontSize: 60 }}>{counts.mediumRiskCount}</Text>
                                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <CircleRisk circleColor={'#FB953C'} />
                                     <CircleRisk circleColor={'#FB953C'} />
@@ -159,7 +192,7 @@ const Analysis = () => {
                             </View>
                             <View style={styles.verticalSeparator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
                             <View style={styles.riskLevel}>
-                                <Text style={{ fontSize: 60 }}>1</Text>
+                                <Text style={{ fontSize: 60 }}>{counts.lowRiskCount}</Text>
                                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <CircleRisk circleColor={'#F6CC29'} />
                                     <CircleRisk circleColor={'#AEB5BD'} />
@@ -170,16 +203,19 @@ const Analysis = () => {
                         </View>
                     </View>
                     <View style={styles.ingredientsRiskSection}>
-                        <View style={styles.ingredientBox}>
-                            <Text>Ingredient Name</Text>
-                        </View>
+                        <FlatList
+                            data={sortedIngredients}
+                            renderItem={({ item }) =>
+                                <IngredientItem name={item.name} confidence={item.confidence} />
+                            }
+                        />
                     </View>
                 </View>
                 <View style={styles.page} key="1">
 
                     <View style={styles.topHalf}>
                         <View style={{ display: 'flex', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 22, fontWeight: 700 }}>Reviews from individuals who share similar skin conditions and have previously tried this product</Text>
+                            <Text style={{ fontSize: 22, fontWeight: '700' }}>Reviews from individuals who share similar skin conditions and have previously tried this product</Text>
                         </View>
                         <View>
                             <View style={styles.effectiveness}>
@@ -291,8 +327,7 @@ const styles = StyleSheet.create({
     ingredientBox: {
         borderRadius: 15,
         padding: 20,
-        width: '80%',
-        backgroundColor: '#FFE5E5'
+        marginVertical: 10
     },
     viewPager: {
         flex: 1,
