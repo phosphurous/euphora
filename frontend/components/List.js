@@ -10,28 +10,19 @@ const Item = ({ name, details }) => (
   </View>
 );
 
-//The filter
 const List = ({ searchPhrase, setClicked, data }) => {
   const renderItem = ({ item }) => {
     //When there is no input, show all
     if (searchPhrase === "") {
-      return <Item name={item.name} details={item.details} />;
+      return <Item name={item} details={""} />;
     }
     // filter of the name
     if (
-      item.name
+      item
         .toUpperCase()
         .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
     ) {
-      return <Item name={item.name} details={item.details} />;
-    }
-    // filter of the description
-    if (
-      item.details
-        .toUpperCase()
-        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
-    ) {
-      return <Item name={item.name} details={item.details} />;
+      return <Item name={item} details={""} />;
     }
   };
 
@@ -45,12 +36,54 @@ const List = ({ searchPhrase, setClicked, data }) => {
         <FlatList
           data={data}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item}
         />
       </View>
     </SafeAreaView>
   );
 };
+
+////The filter
+//const List = ({ searchPhrase, setClicked, data }) => {
+//  const renderItem = ({ item }) => {
+//    //When there is no input, show all
+//    if (searchPhrase === "") {
+//      return <Item name={item.name} details={item.details} />;
+//    }
+//    // filter of the name
+//    if (
+//      item.name
+//        .toUpperCase()
+//        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
+//    ) {
+//      return <Item name={item.name} details={item.details} />;
+//    }
+//    // filter of the description
+//    if (
+//      item.details
+//        .toUpperCase()
+//        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
+//    ) {
+//      return <Item name={item.name} details={item.details} />;
+//    }
+//  };
+//
+//  return (
+//    <SafeAreaView style={styles.list__container}>
+//      <View
+//        onStartShouldSetResponder={() => {
+//          setClicked(false);
+//        }}
+//      >
+//        <FlatList
+//          data={data}
+//          renderItem={renderItem}
+//          keyExtractor={(item) => item.id.toString()}
+//        />
+//      </View>
+//    </SafeAreaView>
+//  );
+//};
 
 export default List;
 
