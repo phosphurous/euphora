@@ -39,11 +39,13 @@ const getConfidenceOfIngredientsInProducts = async (req, res) => {
         }
         const {Ingredients:ingredients} = all_ingredients_and_product
         const allergic_ingredients = await getAllergies(profile_id)
+        if (allergic_ingredients === null){
+            return res.status(400).json({ message: "invalid profile id"} );
+        }
         console.log(allergic_ingredients)
         const output = [] 
         for (const {ingredient_id, ingredient_name} of ingredients) {
               const confidence = await allergyConfidenctGivenIngredient(ingredient_id, allergic_ingredients)
-              console.log(ingredient_id, confidence)
               output.push({name: ingredient_name, confidence: confidence})
         }
       return res.status(200).json({ message: "Successfully retrieved all ingredients of product.",  output} );
@@ -54,12 +56,16 @@ const getConfidenceOfIngredientsInProducts = async (req, res) => {
 }
 
 const getAllergies = async(profile_id) => {
-  const {Ingredients:allergies} = await Profile.findOne({
+  const profile = await Profile.findOne({
       where : {profile_id : profile_id},
       include : [
           {model: Ingredient}
       ]
   })
+  if (profile === null){
+    return null;
+  }
+  const {Ingredients:allergies} = profile;
   allergic_ingredients = allergies.map(a => {
       return {id: a["ingredient_id"], name:a["ingredient_name"]}
   })
@@ -76,13 +82,11 @@ const allergyConfidenctGivenIngredient = async(ingredient_id, allergic_ingredien
   if(definitelyHasAllergy){
       return 1;
   }
-  console.log(allergic_ingredients)
-  const arr_of_ingredient_names = allergic_ingredients.map(i => i.name)
+  const arr_of_ingredient_names = allergic_ingredients.map(i => i.name.toLowerCase())
   const {ingredient_name} = await Ingredient.findOne({
       where : {ingredient_id: ingredient_id}
-  })
-  const {bestMatch}  = await stringSimilarity.findBestMatch(ingredient_name, arr_of_ingredient_names);
-  console.log("match", bestMatch)
+    })
+  const {bestMatch}  = await stringSimilarity.findBestMatch(ingredient_name.toLowerCase(), arr_of_ingredient_names);
   return bestMatch.rating;
 }
 
@@ -199,7 +203,7 @@ const addProduct = async (req, res) => {
       const reviews = await Review.findAll({
         include: [{
           model: Profile,
-          where: { condition: { [Op.in]: conditions } }
+          where: { condition: { [Op.contains]: conditions } }
         }, {
           model: Product,
           where: { product_id: productID }
