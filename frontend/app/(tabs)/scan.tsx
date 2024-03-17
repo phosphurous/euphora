@@ -7,12 +7,48 @@ import * as ImagePicker from 'expo-image-picker';
 import { FileSystemUploadType, uploadAsync } from 'expo-file-system';
 import { Camera, CameraType } from 'expo-camera';
 import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
+import { useNavigation } from '@react-navigation/native';
 
 
 export default function ScanScreen() {
     const [camera, setCamera] = useState<Camera | null>(null);
     const [image, setImage] = useState<string | null>(null);
     const pickImage = async () => {
+      // Check for library permissions
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+          alert('Sorry, we need camera roll permissions to make this work!');
+          return;
+      }
+  
+      // Launch image picker
+      let result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          quality: 1,
+      });
+  
+      if (!result.canceled) {
+          setImage(result.uri); // Set the selected image
+          
+          // Optionally, compress the image before uploading
+          const manipResult = await manipulateAsync(
+              result.uri,
+              [], // No operations to perform
+              { compress: 0.8, format: SaveFormat.JPEG }
+          );
+  
+          // Upload the image
+          const uploadResult = await uploadAsync('http://192.168.56.1:3000/ocr/img-to-text', manipResult.uri, {
+              httpMethod: 'POST',
+              uploadType: FileSystemUploadType.MULTIPART,
+              fieldName: 'demo_image'
+          });
+          console.log(uploadResult);
+      }
+  };
+  
+    // const pickImage = async () => {
 
         // const res2 = await fetch('http://192.168.56.1:3000/ocr/img-to-text')
         // const {data} = await res2.json();
@@ -40,7 +76,7 @@ export default function ScanScreen() {
         //     });
         //     console.log(uploadResult)
         // }
-    };
+    // };
 
     useEffect(() => {
         const sendImage = async () => {
@@ -78,7 +114,25 @@ export default function ScanScreen() {
         } 
     }
 
-
+  const ls = [
+    {'ingredient_in_list':'s/ingredients',
+    'nearest_allergy':null,
+    'max_score':0},
+    {'ingredient_in_list':'aqua (water)',
+    'nearest_allergy': 'WATER',
+    'max_score':1},
+    {'ingredient_in_list':'caprylic/caprictriglycerate',
+    'nearest_allergy':'BUTYLENE GLYCOL',
+    'max_score':0.21052632},
+    {'ingredient_in_list':'cetyl/alcohol',
+    'nearest_allergy':'BUTYLENE GLYCOL',
+    'max_score':0.33333333},
+  ]
+  
+  const handleRead = ({list}) => {
+    const nav = useNavigation();
+    nav.navigate('ingDisplay', {words:list})
+  }
 
   return (
     <View style={styles.container}>
@@ -95,9 +149,14 @@ export default function ScanScreen() {
                 <Text style={styles.buttonText}></Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.uploadButton} onPress={()=>pickImage()}>
-                <Text style={styles.buttonText}></Text>
+                <Image 
+                  source={require("@/assets/images/image.png")} // Adjust the path to your image accordingly
+                  style={styles.uploadButtonImage}
+                />
               </TouchableOpacity>
             </View>
+
+
 
             {/* {image && <Image source={{uri: image}} style={{flex:1}}/>} */}
         {/* </View> */}
@@ -131,21 +190,26 @@ const styles = StyleSheet.create({
     shadowColor: 'black',
     shadowOpacity: 0.3,
     shadowRadius: 3,
-    marginHorizontal: 30, // Add space between the grey and blue button
+    marginHorizontal: 50, // Add space between the grey and blue button
   },
   uploadButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: 'green',
     justifyContent: 'center',
     alignItems: 'center',
+    borderColor: "black",
+    borderWidth: 1,
     // Remove marginLeft if it's no longer necessary
   },
   buttonText: {
       color: 'white', // Button text color
       fontSize: 16, // Adjust your size
       fontWeight: 'bold',
+  },
+  uploadButtonImage: {
+    width: '100%',
+    height: '100%',
   },
   title: {
     fontSize: 20,
