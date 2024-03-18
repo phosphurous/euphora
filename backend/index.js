@@ -25,10 +25,13 @@ const seedData = require('./utils/dbInit');
 //Initialise associations
 const initAssociations = require('./models/associations');
 
-
 app.use(API_VER + '/example', require('./routes/exampleRoutes'))
 app.use(API_VER + '/profile', require('./routes/profileRoutes'))
-app.use('/ocr', require('./routes/ocrRoutes'))
+app.use(API_VER + '/routines', require('./routes/routineRoutes'))
+app.use(API_VER + '/products', require('./routes/productRoutes'))
+app.use(API_VER + '/ingredients', require('./routes/ingredientRoutes'))
+
+app.use(API_VER + '/ocr', require('./routes/ocrRoutes'))
 app.use('/', (req, res) => res.status(200).json("all good :)"))
 
 // //Account routes
@@ -52,10 +55,9 @@ sequelize
   })
 
 sequelize
-  .sync({ alter: true })
+  .sync({ alter: false })
   .then(() => {
     console.log("[SYSTEM] All models synchronized successfully!");
-
     seedData();
   })
   .catch((err) => {
