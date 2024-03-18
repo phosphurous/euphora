@@ -145,8 +145,6 @@ const Analysis = () => {
     }, { highRiskCount: 0, mediumRiskCount: 0, lowRiskCount: 0 });
     return (
         <View style={{ flex: 1 }}>
-            <Text style={styles.title}>Analysis</Text>
-            <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
             <View style={styles.topHalf}>
                 <View style={styles.product}>
                     <Image source={require('../assets/images/aesopProduct.png')}></Image>
@@ -299,7 +297,8 @@ const styles = StyleSheet.create({
     },
     topHalf: {
         paddingHorizontal: 40,
-        paddingBottom: 15
+        paddingBottom: 15,
+        paddingTop: 30
     },
     riskLevel: {
         display: 'flex',
