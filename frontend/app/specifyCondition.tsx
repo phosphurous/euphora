@@ -19,9 +19,11 @@ const SpecifyConditionScreen = () => {
   //Get data from the fake api endpoint
   useEffect(() => {
     const getData = async () => {
-      try{
+      try {
         const response = await axios.get(API_URL);
-        setSkinTypesConditions(response.data.skin_types_conditions.skin_conditions_option);
+        setSkinTypesConditions(
+          response.data.skin_types_conditions.skin_conditions_option,
+        );
         console.log(response.data.skin_types_conditions.skin_conditions_option);
       } catch (error) {
         return Promise.reject(error);
@@ -66,7 +68,6 @@ const SpecifyConditionScreen = () => {
       )}
 
       {optionClicked ? console.log("clicked") : console.log("not clicked")}
-
     </View>
   );
 };
@@ -97,10 +98,9 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   item: {
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     padding: 10,
     marginVertical: 8,
     borderRadius: 8,
-
   },
 });

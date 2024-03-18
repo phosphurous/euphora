@@ -21,7 +21,8 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint, headerShown: false,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        headerShown: false,
       }}
     >
       <Tabs.Screen
@@ -31,7 +32,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Image
               source={require("../../assets/images/home.png")}
-              style={{ width: 20, height: 20, }}
+              style={{ width: 20, height: 20 }}
             />
           ),
         }}
@@ -67,7 +68,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Image
               source={require("../../assets/images/calendar.png")}
-              style={{ width: 20, height: 20, }}
+              style={{ width: 20, height: 20 }}
             />
           ),
         }}
@@ -79,7 +80,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <Image
               source={require("../../assets/images/profile.png")}
-              style={{ width: 20, height: 20, }}
+              style={{ width: 20, height: 20 }}
             />
           ),
         }}

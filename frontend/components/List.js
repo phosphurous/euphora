@@ -30,16 +30,15 @@ const List = ({ searchPhrase, data }) => {
   return (
     <SafeAreaView style={styles.list__container}>
       <View
-//        onStartShouldSetResponder={() => {
-//          setClicked(false);
-//        }}
+      //        onStartShouldSetResponder={() => {
+      //          setClicked(false);
+      //        }}
       >
         <FlatList
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item}
         />
-
       </View>
     </SafeAreaView>
   );
