@@ -15,9 +15,6 @@ const CircleRisk = ({ circleColor }) => {
     );
 };
 
-let highRiskCount = 0;
-let mediumRiskCount = 0;
-let lowRiskCount = 0;
 type IngredientItemProps = {
     name: string; confidence: number;
 }
@@ -47,7 +44,7 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
 type ReviewItemProps = {
     negativeReaction: boolean; rating: number, description: string
 }
-const ReviewItem = ({ rating, description }: ReviewItemProps) => {
+const ReviewItem = ({ rating, description, negativeReaction }: ReviewItemProps) => {
     const getStarImage = (rating: number) => {
         switch (rating) {
             case 1:
@@ -68,6 +65,7 @@ const ReviewItem = ({ rating, description }: ReviewItemProps) => {
         <View style={styles.review}>
             <Text style={{ fontWeight: '700' }}>Beatrice</Text>
             <Image source={getStarImage(rating)}></Image>
+            <Text style={{color: 'grey', marginBottom: 2}}>{negativeReaction == true ? "Experienced a negative reaction":"Did not experience any negative reactions"}</Text>
             <Text>{description}</Text>
         </View>
     );
@@ -261,7 +259,7 @@ const Analysis = () => {
                             <FlatList
                                 data={reviews}
                                 renderItem={({ item }) =>
-                                    <ReviewItem rating={item.rating} description={item.description} />
+                                    <ReviewItem rating={item.rating} description={item.description} negativeReaction={item.negativeReaction}/>
                                 }
                             // keyExtractor={(item) => item.review_id.toString()}
                             />
