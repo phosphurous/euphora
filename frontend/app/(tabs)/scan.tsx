@@ -10,7 +10,7 @@ export default function ScanScreen() {
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
       {/* <EditScreenInfo path="app/(tabs)/scan.tsx" /> */}
       <View>
-      <Link href="/(ingredients)/ingredientsAnalysis" asChild>
+      <Link href="/ingredientsAnalysis" asChild>
          <Text>Link to analysis page</Text>
       </Link>
       </View>

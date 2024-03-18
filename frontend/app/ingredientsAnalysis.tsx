@@ -51,17 +51,17 @@ const ReviewItem = ({ rating, description }: ReviewItemProps) => {
     const getStarImage = (rating: number) => {
         switch (rating) {
             case 1:
-                return require('../../assets/images/1stars.png');
+                return require('../assets/images/1stars.png');
             case 2:
-                return require('../../assets/images/2stars.png');
+                return require('../assets/images/2stars.png');
             case 3:
-                return require('../../assets/images/3stars.png');
+                return require('../assets/images/3stars.png');
             case 4:
-                return require('../../assets/images/4stars.png');
+                return require('../assets/images/4stars.png');
             case 5:
-                return require('../../assets/images/5stars.png');
+                return require('../assets/images/5stars.png');
             default:
-                return require('../../assets/images/5stars.png'); // Default to 5 stars
+                return require('../assets/images/5stars.png'); // Default to 5 stars
         }
     };
     return (
@@ -149,7 +149,7 @@ const Analysis = () => {
             <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
             <View style={styles.topHalf}>
                 <View style={styles.product}>
-                    <Image source={require('../../assets/images/aesopProduct.png')}></Image>
+                    <Image source={require('../assets/images/aesopProduct.png')}></Image>
                     <View style={{ display: 'flex', justifyContent: 'center' }}>
                         <Text>Brand</Text>
                         <Text style={{ fontSize: 16 }}>Product Name</Text>
@@ -228,23 +228,23 @@ const Analysis = () => {
                                     <View>
                                         <Text>Effectiveness Rating</Text>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={require('../../assets/images/5stars.png')}></Image>
+                                            <Image source={require('../assets/images/5stars.png')}></Image>
                                             <Text style={{ marginLeft: 10 }}>{ratingsCount[4]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={require('../../assets/images/4stars.png')}></Image>
+                                            <Image source={require('../assets/images/4stars.png')}></Image>
                                             <Text style={{ marginLeft: 10 }}>{ratingsCount[3]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={require('../../assets/images/3stars.png')}></Image>
+                                            <Image source={require('../assets/images/3stars.png')}></Image>
                                             <Text style={{ marginLeft: 10 }}>{ratingsCount[2]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={require('../../assets/images/2stars.png')}></Image>
+                                            <Image source={require('../assets/images/2stars.png')}></Image>
                                             <Text style={{ marginLeft: 10 }}>{ratingsCount[1]}</Text>
                                         </View>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-                                            <Image source={require('../../assets/images/1stars.png')}></Image>
+                                            <Image source={require('../assets/images/1stars.png')}></Image>
                                             <Text style={{ marginLeft: 10 }}>{ratingsCount[0]}</Text>
                                         </View>
                                     </View>
@@ -254,7 +254,7 @@ const Analysis = () => {
                                     </View>
                                 </View>
                                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginTop: 16 }}>
-                                    <Image source={require('../../assets/images/sadface.png')} style={{ marginHorizontal: 5 }}></Image>
+                                    <Image source={require('../assets/images/sadface.png')} style={{ marginHorizontal: 5 }}></Image>
                                     <Text >{percentageNegativeReactions}% experienced negative reactions</Text>
                                 </View>
                             </View>
