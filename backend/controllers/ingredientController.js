@@ -33,26 +33,72 @@ const get_allergy_confidence_of_ingredient_list_in_image = async(req,res) => {
     if(!ingredient_list){
         return res.status(400).json({message:"invalid image"});
     }
-    const output = []
-    // for each ingredient here check if is allergic
-    // can reduce time by taking out extracting the discovery of allergy outside
-    // limit the match to only top 5 ingredients?
-    
-    try {
-        for (const ingredient of ingredient_list) {
-            const confidence = await get_allergy_confidence(profile_id, ingredient)
-            console.log(confidence)
-            output.push({ingredient_in_list: ingredient, ...confidence})
-        }
-        return res.status(200).json({output});
-    } catch (error) {
-        return res.status(400).json({error});
+    // const embedded_list = []
+    // for (const ingredient of ingredient_list){
+    //     const embedding = await generatEmbeddings(ingredient)
+    //     embedded_list.push({embedding: embedding, query_ingredient:ingredient});
+    // }
+
+    const allergic_ingredients = await getAllergies(profile_id);
+    if(allergic_ingredients === null){
+        return res.status(400).json({message: "Invalid profile_id"})
     }
-}
+    const arr_of_ingredient_names = allergic_ingredients.map(i => i.name.toLowerCase())
+    console.log(allergic_ingredients)
+    if (allergic_ingredients.length < 1){
+        return res.status(200).json({ingredient_list, message: "no allergy"})
+    }
+
+    const output = [];
+    // let max_score = 0;
+    // let nearest_allergy = null;
+    for (const ingredient of ingredient_list) {
+        const {bestMatch}  = await stringSimilarity.findBestMatch(ingredient.toLowerCase(), arr_of_ingredient_names);
+        const max_score = bestMatch.rating;
+        const nearest_allergy = bestMatch.target;
+        output.push({ingredient, nearest_allergy, max_score})
+    }
+// chunking
+    // const cut_embedded_list = embedded_list.reduce((result, item, index) => {
+    //     const chunkIndex = Math.floor(index / 3);
+    //     if (!result[chunkIndex]) {
+    //         result[chunkIndex] = []; // Initialize chunk if it doesn't exist
+    //     }
+    //     result[chunkIndex].push(item);
+    //     return result;
+    // }, []);
+
+// batch query
+    // const embedded_list = [{embedding: await generatEmbeddings("niacin"), query_ingredient: "niacin"}]
+    // for (const list of cut_embedded_list) {
+    //     list.forEach(({query_ingredient, embedding}) => console.log(query_ingredient));
+        // const { data, error } =await supabase.rpc('batch_match', {
+        //     embedding_list : list,
+        //     match_threshold : 0.9,
+        //     match_count : 1,
+        // })
+        // console.log(data, error)
+        // output.push(data)
+        
+// if we do 1 by 1 but it is horribly slow
+        // try {
+        //     for (const ingredient of ingredient_list) {
+        //         const confidence = await get_allergy_confidence(profile_id, ingredient)
+        //         console.log(confidence)
+        //         output.push({ingredient_in_list: ingredient, ...confidence})
+        //     }
+        //     return res.status(200).json({output});
+        // } catch (error) {
+        //     return res.status(400).json({error});
+        // }
+        return res.status(200).json({output})
+    }
+
 
 
 
 // helpers
+
 const get_similar_ingredients = async(ingredient_name) => {
     let embedding = await generatEmbeddings(ingredient_name);
     embedding = JSON.parse(embedding)
