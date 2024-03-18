@@ -10,7 +10,8 @@ const Item = ({ name, details }) => (
   </View>
 );
 
-const List = ({ searchPhrase, setClicked, data }) => {
+//const List = ({ searchPhrase, setClicked, data }) => {
+const List = ({ searchPhrase, data }) => {
   const renderItem = ({ item }) => {
     //When there is no input, show all
     if (searchPhrase === "") {
@@ -29,20 +30,22 @@ const List = ({ searchPhrase, setClicked, data }) => {
   return (
     <SafeAreaView style={styles.list__container}>
       <View
-        onStartShouldSetResponder={() => {
-          setClicked(false);
-        }}
+//        onStartShouldSetResponder={() => {
+//          setClicked(false);
+//        }}
       >
         <FlatList
           data={data}
           renderItem={renderItem}
           keyExtractor={(item) => item}
         />
+
       </View>
     </SafeAreaView>
   );
 };
 
+// ORIGINAL:
 ////The filter
 //const List = ({ searchPhrase, setClicked, data }) => {
 //  const renderItem = ({ item }) => {

@@ -6,12 +6,14 @@ import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
 import List from "@/components/List";
 import axios from "axios";
+import { Link } from "expo-router";
 
 const API_URL = "http://13.229.232.103:3000/api/v1/profile/get_skin_types_cond";
 
 const SpecifyConditionScreen = () => {
   const [searchPhrase, setSearchPhrase] = useState("");
   const [clicked, setClicked] = useState(false);
+  const [optionClicked, setOptionClicked] = useState(false);
   const [skinTypesConditions, setSkinTypesConditions] = useState(null);
 
   //Get data from the fake api endpoint
@@ -53,13 +55,18 @@ const SpecifyConditionScreen = () => {
         <List
           searchPhrase={searchPhrase}
           data={skinTypesConditions}
-          setClicked={setClicked}
+          setClicked={setOptionClicked}
         />
       ) : (
-        <Text style={styles.body}>
-          I don't have any skin conditions or allergies.
-        </Text>
+        <Link href="/skinQuiz1" asChild>
+          <Text style={styles.body}>
+            I don't have any skin conditions or allergies.
+          </Text>
+        </Link>
       )}
+
+      {optionClicked ? console.log("clicked") : console.log("not clicked")}
+
     </View>
   );
 };
