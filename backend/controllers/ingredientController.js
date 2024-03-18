@@ -4,7 +4,8 @@ const {supabase} = require('../config/database')
 const {generatEmbeddings} = require('../utils/matching_helpers')
 const Profile = require("../models/profile");
 const stringSimilarity = require("string-similarity");
-
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+const {GEMINI_API_KEY} = require('../utils/config')
 
 
 const similar_ingredients = async(req,res) => {
@@ -94,8 +95,45 @@ const get_allergy_confidence_of_ingredient_list_in_image = async(req,res) => {
         return res.status(200).json({output})
     }
 
+const get_AI_repsonse_on_allergy = async (req, res) => {
+    const ingredient_name = req.query.ingredient_name
+    const profile_id = req.params.id;
+    // Access your API key as an environment variable (see "Set up your API key" above)
+    const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-pro"});
 
+    
+    const allergies = await getAllergies(profile_id);
+    console.log("allergies",allergies)
+    if (allergies === null){
+        return res.status(400).json({message: "invalid profile id"});
+    }
+    else if (allergies.length < 1){
+        return res.status(200).json({message: "no allergies"});
+    }
+    
+    let allergy_msg = "and I am allergic to ";
+    allergies.forEach(({name}) => allergy_msg += ` ${name},`);
+    
+    const {condition, skin_type} = await Profile.findOne({where : {profile_id : profile_id}})
+    const skin_type_msg = `I have ${skin_type} skin type`;
+    let conditions_msg = " and the following conditions ";
+    condition.forEach((c) => conditions_msg += `${c}, `);
+    const ingredient_msg = ` what are the possible sideeffects if i were to use a skin care product with ${ingredient_name}?`
+    const query = skin_type_msg + conditions_msg + allergy_msg + ingredient_msg;
+    
+    // // console.log(query)
+    // const test1 = "I have oily skin type and the following conditions eczema, acne, psoriasis, and I am allergic to  water, glycerol, what are the possible sideeffects if i were to use a skin care product with niacinanmide?"
+    // const test2 = "what are the some issues "
+    
 
+    const result = await model.generateContent(query);
+    const response = await result.response;
+    const text = response.text();
+    
+    return res.status(200).json({"response": text});
+    // return res.status(200).json({text});
+}
 
 // helpers
 
@@ -151,4 +189,4 @@ const getAllergies = async(profile_id) => {
     return allergic_ingredients
 }
 
-module.exports = {similar_ingredients, is_allergic, get_allergy_confidence_of_ingredient_list_in_image}
+module.exports = {get_AI_repsonse_on_allergy, similar_ingredients, is_allergic, get_allergy_confidence_of_ingredient_list_in_image}

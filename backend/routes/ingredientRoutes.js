@@ -1,7 +1,7 @@
 
 const express = require('express');
 const router = express.Router();
-const {similar_ingredients, is_allergic, get_allergy_confidence_of_ingredient_list_in_image} = require('../controllers/ingredientController')
+const {similar_ingredients, is_allergic, get_allergy_confidence_of_ingredient_list_in_image, get_AI_repsonse_on_allergy} = require('../controllers/ingredientController')
 const multer  = require('multer')
 
 const upload = multer({}).single("ingredient_image");
@@ -17,4 +17,5 @@ router.get('/:id/is-allergic', is_allergic)
 
 router.post('/:id/allergy-confidence', upload, get_allergy_confidence_of_ingredient_list_in_image);
 
+router.get('/:id/AI', get_AI_repsonse_on_allergy)
 module.exports = router;
