@@ -8,13 +8,14 @@ import { FileSystemUploadType, uploadAsync } from 'expo-file-system';
 import { Camera, CameraType } from 'expo-camera';
 import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 import { useNavigation } from '@react-navigation/native';
-import uri from 'expo-file-system';
 
 import { Link } from 'expo-router';
 
 export default function ScanScreen() {
     const [camera, setCamera] = useState<Camera | null>(null);
     const [image, setImage] = useState<string | null>(null);
+    const [allergentLst, setAllergentLst] = useState<string[]>([]);
+    const [isCameraReady, setIsCameraReady] = useState(false);
 
     const pickImage = async () => {
       // Check for library permissions
@@ -27,21 +28,21 @@ export default function ScanScreen() {
       // Launch image picker
       let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
-          allowsEditing: true,
+          //allowsEditing: true,
           quality: 1,
       });
 
       console.log(result);
-      console.log(result[uri]);
+      console.log(result.assets[0].uri);
   
-      if (!result.canceled && result.uri) {
-          setImage(result.uri); // Set the selected image
+      if (!result.canceled && result.assets[0].uri) {
+          setImage(result.assets[0].uri); // Set the selected image
           
           // Optionally, compress the image before uploading
 
           try {
             const manipResult = await manipulateAsync(
-                result.uri,
+                result.assets[0].uri,
                 [], // No operations to perform
                 { compress: 0.8, format: SaveFormat.JPEG }
             );
@@ -52,7 +53,8 @@ export default function ScanScreen() {
                 uploadType: FileSystemUploadType.MULTIPART,
                 fieldName: 'demo_image'
             });
-            console.log(uploadResult);
+            console.log("uploadresult: ",uploadResult);
+
           } catch (error) {
             console.log("An error occurred during the image manipulation or upload process: ", error);
           }
@@ -107,7 +109,7 @@ export default function ScanScreen() {
                 const apiURL = "http://13.229.232.103:3000/api/v1/ingredients/1/allergy-confidence"
 
                 // here is to upload to backend
-                const uploadResult = await uploadAsync('https://cdwp7vpn-3000.asse.devtunnels.ms/ocr/img-to-text', manipResult.uri, {
+                const uploadResult = await uploadAsync(apiURL, manipResult.uri, {
                     httpMethod: 'POST',
                     uploadType: FileSystemUploadType.MULTIPART,
                     fieldName: 'ingredient_image'
@@ -115,7 +117,9 @@ export default function ScanScreen() {
 
                 if (uploadResult.status === 200) {
                   const jsonResponse = JSON.parse(uploadResult.body);
-                  console.log(jsonResponse);
+                  console.log("confidence: " , jsonResponse);
+                  setAllergentLst(jsonResponse);
+                  console.log("allergent list: " , allergentLst);
                   // Handle the JSON response here, such as updating state or UI
                 } else {
                   console.error('Failed to upload image to API');
@@ -126,11 +130,17 @@ export default function ScanScreen() {
     },[image])
 
     const takePicture = async() => {
-        if(camera){
-            const data = await camera.takePictureAsync({base64 : true})
+        if(camera && isCameraReady){
+          try {
+            const data = await camera.takePictureAsync({ base64: true });
             setImage(data.uri);
-            // console.log(data.uri);
-        } 
+        } catch (error) {
+            console.error("Error taking picture: ", error);
+        }
+        } else {
+            console.log('Camera is not ready yet.');
+            // Optionally, inform the user or disable the take picture button until the camera is ready.
+        }
     }
 
   return (
@@ -141,7 +151,8 @@ export default function ScanScreen() {
                 ref={ref => setCamera(ref)}
                 style={cameraStyles.fixedRatio} 
                 type={CameraType.back}
-                ratio={'16:9'} />
+                ratio={'16:9'} 
+                onCameraReady={() => setIsCameraReady(true)}/>
             </View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.circularButton} onPress={()=>takePicture()}>
