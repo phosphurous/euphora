@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, FlatList } from "react-native";
-
-import EditScreenInfo from "@/components/EditScreenInfo";
+import { StyleSheet } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
 import List from "@/components/List";
 import axios from "axios";
-import { Link } from "expo-router";
 
 const API_URL = "http://13.229.232.103:3000/api/v1/profile/get_skin_types_cond";
 
 const SpecifyConditionScreen = () => {
+  const navigation = useNavigation();
+
   const [searchPhrase, setSearchPhrase] = useState("");
   const [clicked, setClicked] = useState(false);
-  const [optionClicked, setOptionClicked] = useState(false);
+  //   const [optionClicked, setOptionClicked] = useState(false);
   const [skinTypesConditions, setSkinTypesConditions] = useState(null);
 
-  //Get data from the fake api endpoint
   useEffect(() => {
     const getData = async () => {
       try {
@@ -57,17 +56,16 @@ const SpecifyConditionScreen = () => {
         <List
           searchPhrase={searchPhrase}
           data={skinTypesConditions}
-          setClicked={setOptionClicked}
+          setClicked={setClicked}
         />
       ) : (
-        <Link href="/skinQuiz1" asChild>
-          <Text style={styles.body}>
-            I don't have any skin conditions or allergies.
-          </Text>
-        </Link>
+        <Text
+          style={styles.body}
+          onPress={() => navigation.navigate("skinQuiz1")}
+        >
+          I don't have any skin conditions or allergies.
+        </Text>
       )}
-
-      {optionClicked ? console.log("clicked") : console.log("not clicked")}
     </View>
   );
 };
@@ -91,16 +89,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
     bottom: 100,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  item: {
-    backgroundColor: "#f5f5f5",
-    padding: 10,
-    marginVertical: 8,
-    borderRadius: 8,
   },
 });

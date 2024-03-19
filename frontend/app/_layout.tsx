@@ -71,6 +71,7 @@ function RootLayoutNav() {
           name="ingredientsAnalysis"
           options={{ title: "Analysis" }}
         />
+        <Stack.Screen name="skinQuiz1" options={{ title: "Skin Quiz" }} />
       </Stack>
     </ThemeProvider>
   );
