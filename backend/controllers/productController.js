@@ -1,12 +1,11 @@
 const Ingredient = require("../models/ingredient");
 const Product = require("../models/product");
 const Profile = require("../models/profile");
-const {supabase} = require('../config/database')
-const {ProfileIngredient} = require('../models/joinTables')
 const stringSimilarity = require("string-similarity");
 const { addRoutine, addProductToRoutine } = require("./routineController");
 const Review = require("../models/review");
 const { Op } = require('sequelize');
+const Account = require("../models/account");
 
 //This is for user to add into the Routine
 const getAllProducts = async (req, res) => {
@@ -203,6 +202,10 @@ const addProduct = async (req, res) => {
       const reviews = await Review.findAll({
         include: [{
           model: Profile,
+          include: [{
+            model: Account,
+            attributes: ['name']
+          }],
           where: { condition: { [Op.contains]: conditions } }
         }, {
           model: Product,
