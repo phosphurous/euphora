@@ -24,3 +24,6 @@ combo
 npx supabase db reset
 npx supabase migrations up
 npx supabase functions serve --no-verify-jwt
+npx supabase migration repair [id] --status reverted
+npx supabase migration repair [id] --status applied
+npx supabase db push
