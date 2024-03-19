@@ -67,7 +67,10 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="specifyCondition" options={{ title: "My Skin" }} />
-        <Stack.Screen name="ingredientsAnalysis" options={{ title: "Analysis" }} />
+        <Stack.Screen
+          name="ingredientsAnalysis"
+          options={{ title: "Analysis" }}
+        />
       </Stack>
     </ThemeProvider>
   );
