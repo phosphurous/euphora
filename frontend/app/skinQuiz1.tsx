@@ -3,10 +3,11 @@ import { StyleSheet, Pressable } from "react-native";
 import { Text, View } from "@/components/Themed";
 
 export default function SkinQuiz1() {
-  const [selectedOptions, setSelectedOptions] = React.useState<Array<number | null>>(
-    Array(4).fill(null)
-  );
-  const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState<number>(0);
+  const [selectedOptions, setSelectedOptions] = React.useState<
+    Array<number | null>
+  >(Array(4).fill(null));
+  const [currentQuestionIndex, setCurrentQuestionIndex] =
+    React.useState<number>(0);
   const [questions] = React.useState([
     {
       id: 1,
@@ -57,64 +58,79 @@ export default function SkinQuiz1() {
   };
 
   const handleNextQuestion = () => {
-    setCurrentQuestionIndex((prevIndex) => Math.min(prevIndex + 1, questions.length - 1));
+    setCurrentQuestionIndex((prevIndex) =>
+      Math.min(prevIndex + 1, questions.length - 1),
+    );
   };
 
   const handlePreviousQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => Math.max(prevIndex - 1, 0));
   };
 
-   return (
-      <View style={styles.container}>
-        <Text style={styles.title}>{questions[currentQuestionIndex]?.question}</Text>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>
+        {questions[currentQuestionIndex]?.question}
+      </Text>
 
-        <View style={styles.optionsContainer}>
-          {questions[currentQuestionIndex]?.options.map((option, index) => (
-            <Pressable
-              key={index}
-              style={({ pressed }) => [
-                styles.option,
-                selectedOptions[currentQuestionIndex] === index && styles.selectedOption,
-                pressed && styles.pressedOption,
-              ]}
-              onPress={() => handleOptionPress(index)}
-            >
-              <Text style={styles.optionText}>{option}</Text>
-            </Pressable>
-          ))}
-        </View>
+      <View style={styles.optionsContainer}>
+        {questions[currentQuestionIndex]?.options.map((option, index) => (
+          <Pressable
+            key={index}
+            style={({ pressed }) => [
+              styles.option,
+              selectedOptions[currentQuestionIndex] === index &&
+                styles.selectedOption,
+              pressed && styles.pressedOption,
+            ]}
+            onPress={() => handleOptionPress(index)}
+          >
+            <Text style={styles.optionText}>{option}</Text>
+          </Pressable>
+        ))}
+      </View>
 
-        <View style={styles.buttonContainer}>
-          {currentQuestionIndex !== 0 && (
-            <Pressable
-              style={({ pressed }) => [
-                styles.button,
-                styles.backButton,
-                pressed && styles.backButtonPressed,
-              ]}
-              onPress={handlePreviousQuestion}
-            >
-              <Text style={styles.buttonText}>Back</Text>
-            </Pressable>
-          )}
-
+      <View style={styles.buttonContainer}>
+        {currentQuestionIndex !== 0 && (
           <Pressable
             style={({ pressed }) => [
               styles.button,
-              styles.nextButton,
-              pressed && styles.nextButtonPressed,
-              { marginLeft: currentQuestionIndex === 0 ? "auto" : 0 }, // Align to right if it's the first question
-              { opacity: selectedOptions[currentQuestionIndex] === null ? 0.5 : 1 },
+              styles.backButton,
+              pressed && styles.backButtonPressed,
             ]}
-            onPress={currentQuestionIndex === questions.length - 1 ? () => console.log("Submit", selectedOptions) : handleNextQuestion}
-            disabled={selectedOptions[currentQuestionIndex] === null}
+            onPress={handlePreviousQuestion}
           >
-            <Text style={styles.buttonText}>{currentQuestionIndex === questions.length - 1 ? "Submit" : "Next Question"}</Text>
+            <Text style={styles.buttonText}>Back</Text>
           </Pressable>
-        </View>
+        )}
+
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            styles.nextButton,
+            pressed && styles.nextButtonPressed,
+            { marginLeft: currentQuestionIndex === 0 ? "auto" : 0 }, // Align to right if it's the first question
+            {
+              opacity: selectedOptions[currentQuestionIndex] === null ? 0.5 : 1,
+            },
+          ]}
+          onPress={
+            currentQuestionIndex === questions.length - 1
+              ? () => console.log("Submit", selectedOptions)
+              : handleNextQuestion
+          }
+          disabled={selectedOptions[currentQuestionIndex] === null}
+        >
+          <Text style={styles.buttonText}>
+            {currentQuestionIndex === questions.length - 1
+              ? "Submit"
+              : "Next Question"}
+          </Text>
+        </Pressable>
       </View>
-    );
-  }
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -144,41 +160,40 @@ const styles = StyleSheet.create({
   selectedOption: {
     backgroundColor: "#E9F4E4",
   },
-    pressedOption: {
-      opacity: 0.5,
-    },
-    optionText: {
-      fontSize: 16,
-    },
-    buttonContainer: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: "80%",
-      marginTop: 20,
-    },
-    button: {
-      paddingVertical: 10,
-      paddingHorizontal: 20,
-      borderRadius: 10,
-      backgroundColor: "#0D332A",
-    },
-    backButton: {
-      marginRight: 10,
-    },
-    backButtonPressed: {
-      opacity: 0.5,
-    },
-    nextButton: {},
-    nextButtonPressed: {
-      opacity: 0.5,
-    },
-    submitButton: {},
-    submitButtonPressed: {
-      opacity: 0.5,
-    },
-    buttonText: {
-      color: "white",
-      fontSize: 16,
-    },
-  });
-
+  pressedOption: {
+    opacity: 0.5,
+  },
+  optionText: {
+    fontSize: 16,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "80%",
+    marginTop: 20,
+  },
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#0D332A",
+  },
+  backButton: {
+    marginRight: 10,
+  },
+  backButtonPressed: {
+    opacity: 0.5,
+  },
+  nextButton: {},
+  nextButtonPressed: {
+    opacity: 0.5,
+  },
+  submitButton: {},
+  submitButtonPressed: {
+    opacity: 0.5,
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+  },
+});
