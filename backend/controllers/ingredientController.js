@@ -1,7 +1,7 @@
 const {img_to_text} = require('./ocrController.js');
 const Ingredient = require('../models/ingredient');
 const {supabase} = require('../config/database')
-const {generatEmbeddings} = require('../utils/matching_helpers')
+const {generatEmbeddings, generateBatchEmbed} = require('../utils/matching_helpers')
 const Profile = require("../models/profile");
 const stringSimilarity = require("string-similarity");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -34,11 +34,6 @@ const get_allergy_confidence_of_ingredient_list_in_image = async(req,res) => {
     if(!ingredient_list){
         return res.status(400).json({message:"invalid image"});
     }
-    // const embedded_list = []
-    // for (const ingredient of ingredient_list){
-    //     const embedding = await generatEmbeddings(ingredient)
-    //     embedded_list.push({embedding: embedding, query_ingredient:ingredient});
-    // }
 
     const allergic_ingredients = await getAllergies(profile_id);
     if(allergic_ingredients === null){
@@ -50,15 +45,44 @@ const get_allergy_confidence_of_ingredient_list_in_image = async(req,res) => {
         return res.status(200).json({ingredient_list, message: "no allergy"})
     }
 
-    const output = [];
-    // let max_score = 0;
-    // let nearest_allergy = null;
-    for (const ingredient of ingredient_list) {
-        const {bestMatch}  = await stringSimilarity.findBestMatch(ingredient.toLowerCase(), arr_of_ingredient_names);
-        const max_score = bestMatch.rating;
-        const nearest_allergy = bestMatch.target;
-        output.push({ingredient, nearest_allergy, max_score})
+    // const output = [];
+    // for (const ingredient of ingredient_list) {
+    //     const {bestMatch}  = await stringSimilarity.findBestMatch(ingredient.toLowerCase(), arr_of_ingredient_names);
+    //     const max_score = bestMatch.rating;
+    //     const nearest_allergy = bestMatch.target;
+    //     output.push({ingredient, nearest_allergy, max_score})
+    // }
+
+// test start
+    const test_output = [];
+    const embedded_list = await generateBatchEmbed(ingredient_list)
+    for (let i = 0; i < ingredient_list.length; i++) {
+        const ingredient = ingredient_list[i];
+        const embedding = embedded_list[i];
+        console.log("ing", embedding);
+        let nearest_allergy = null;
+        let max_score = 0;
+        const { data: similar_ingredients } = await supabase.rpc('match_ingredients', {
+            query_embedding: embedding, // Pass the embedding you want to compare
+            match_threshold: 0.7, // Choose an appropriate threshold for your data
+            match_count: 10, // Choose the number of matches
+        })
+        console.log(similar_ingredients);
+        if (similar_ingredients !== null){
+            for (const {ingredient_name: i} of similar_ingredients) {
+                const {bestMatch}  = await stringSimilarity.findBestMatch(i.toLowerCase(), arr_of_ingredient_names);
+                if (bestMatch.rating > max_score){
+                    max_score = bestMatch.rating;
+                    nearest_allergy = bestMatch.target;
+                }
+            }
+        }
+        test_output.push({"ingredient_in_list": ingredient, "max_score":max_score, "nearest_allergy":nearest_allergy})
     }
+    return res.status(200).json(test_output);
+
+// test end
+
 // chunking
     // const cut_embedded_list = embedded_list.reduce((result, item, index) => {
     //     const chunkIndex = Math.floor(index / 3);
@@ -92,7 +116,7 @@ const get_allergy_confidence_of_ingredient_list_in_image = async(req,res) => {
         // } catch (error) {
         //     return res.status(400).json({error});
         // }
-        return res.status(200).json({output})
+        // return res.status(200).json({output})
     }
 
 const get_AI_repsonse_on_allergy = async (req, res) => {
@@ -126,12 +150,15 @@ const get_AI_repsonse_on_allergy = async (req, res) => {
     // const test1 = "I have oily skin type and the following conditions eczema, acne, psoriasis, and I am allergic to  water, glycerol, what are the possible sideeffects if i were to use a skin care product with niacinanmide?"
     // const test2 = "what are the some issues "
     
-
-    const result = await model.generateContent(query);
-    const response = await result.response;
-    const text = response.text();
-    
-    return res.status(200).json({"response": text});
+    try {
+        const result = await model.generateContent(query);
+        const response = await result.response;
+        const text = response.text();
+        return res.status(200).json({"response": text});
+        
+    } catch (error) {
+        return res.status(400).json({"response": "please try again later", message: "Don't spam api pls", error: error});
+    }
     // return res.status(200).json({text});
 }
 
