@@ -67,7 +67,15 @@ function RootLayoutNav() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="specifyCondition" options={{ title: "My Skin" }} />
-        <Stack.Screen name="ingredientsAnalysis" options={{ title: "Analysis" }} />
+        <Stack.Screen
+          name="ingredientsAnalysis"
+          options={{ title: "Analysis" }}
+        />
+        <Stack.Screen name="skinQuiz1" options={{ title: "Skin Quiz" }} />
+        <Stack.Screen
+          name="quizResult"
+          options={{ title: "Quiz Result", tabBarVisible: true }}
+        />
       </Stack>
     </ThemeProvider>
   );

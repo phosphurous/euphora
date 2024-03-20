@@ -1,91 +1,52 @@
-// List.js
 import React from "react";
-import { StyleSheet, Text, View, FlatList, SafeAreaView } from "react-native";
+import {
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  SafeAreaView,
+  FlatList,
+} from "react-native";
+import { Text } from "@/components/Themed";
 
-// definition of the Item, which will be rendered in the FlatList
-const Item = ({ name, details }) => (
-  <View style={styles.item}>
-    <Text style={styles.title}>{name}</Text>
-    <Text style={styles.details}>{details}</Text>
-  </View>
+const Item = ({ name, details, onPress }) => (
+  <TouchableOpacity onPress={() => onPress(name)} style={styles.item}>
+    <View style={styles.textContainer}>
+      <Text style={styles.title}>{name}</Text>
+      <Text style={styles.details}>{details}</Text>
+    </View>
+  </TouchableOpacity>
 );
 
-//const List = ({ searchPhrase, setClicked, data }) => {
-const List = ({ searchPhrase, data }) => {
+const List = ({ searchPhrase, data, onOptionClick }) => {
   const renderItem = ({ item }) => {
-    //When there is no input, show all
+    // When there is no input, show all
     if (searchPhrase === "") {
-      return <Item name={item} details={""} />;
+      return (
+        <Item name={item} details={""} onPress={() => onOptionClick(item)} />
+      );
     }
-    // filter of the name
+    // Filter of the name
     if (
       item
         .toUpperCase()
         .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
     ) {
-      return <Item name={item} details={""} />;
+      return (
+        <Item name={item} details={""} onPress={() => onOptionClick(item)} />
+      );
     }
   };
 
   return (
     <SafeAreaView style={styles.list__container}>
-      <View
-      //        onStartShouldSetResponder={() => {
-      //          setClicked(false);
-      //        }}
-      >
-        <FlatList
-          data={data}
-          renderItem={renderItem}
-          keyExtractor={(item) => item}
-        />
-      </View>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item}
+      />
     </SafeAreaView>
   );
 };
-
-// ORIGINAL:
-////The filter
-//const List = ({ searchPhrase, setClicked, data }) => {
-//  const renderItem = ({ item }) => {
-//    //When there is no input, show all
-//    if (searchPhrase === "") {
-//      return <Item name={item.name} details={item.details} />;
-//    }
-//    // filter of the name
-//    if (
-//      item.name
-//        .toUpperCase()
-//        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
-//    ) {
-//      return <Item name={item.name} details={item.details} />;
-//    }
-//    // filter of the description
-//    if (
-//      item.details
-//        .toUpperCase()
-//        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
-//    ) {
-//      return <Item name={item.name} details={item.details} />;
-//    }
-//  };
-//
-//  return (
-//    <SafeAreaView style={styles.list__container}>
-//      <View
-//        onStartShouldSetResponder={() => {
-//          setClicked(false);
-//        }}
-//      >
-//        <FlatList
-//          data={data}
-//          renderItem={renderItem}
-//          keyExtractor={(item) => item.id.toString()}
-//        />
-//      </View>
-//    </SafeAreaView>
-//  );
-//};
 
 export default List;
 
@@ -100,10 +61,16 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     borderBottomColor: "lightgrey",
   },
+  textContainer: {
+    flex: 1,
+  },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 5,
-    fontStyle: "italic",
+  },
+  details: {
+    fontSize: 16,
+    color: "grey",
   },
 });

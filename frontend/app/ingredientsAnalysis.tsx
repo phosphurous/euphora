@@ -220,7 +220,7 @@ const Analysis = () => {
                 <View style={styles.container}>
                     <View style={styles.topHalf}>
                         <View style={{ display: 'flex', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 22, fontWeight: 700 }}>Harmful ingredients found</Text>
+                            <Text style={{ fontSize: 22, fontWeight: '700' }}>Harmful ingredients found</Text>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                             <View style={styles.riskLevel}>

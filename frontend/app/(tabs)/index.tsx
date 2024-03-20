@@ -1,19 +1,12 @@
 import React from "react";
-import { StyleSheet, TouchableHighlight } from "react-native";
+import { StyleSheet, TouchableHighlight, Image } from "react-native";
 import { Link } from "expo-router";
-// import { Logo } from '@/assets/images/logo.png';
-// import { Image } from 'expo-image';
 
 import { Text, View } from "@/components/Themed";
 
 export default function TabOneScreen() {
   return (
     <View style={styles.container}>
-      {/*
-      <View style={styles.imageContainer}>
-        <Image source="@/assets/images/logo.png" placeholder='logo'/>
-      </View>
-  */}
       <Text style={styles.title}>Euphora</Text>
       <View
         style={styles.separator}
@@ -22,6 +15,10 @@ export default function TabOneScreen() {
       />
       <Text style={styles.body}>Rediscover Your Skincare Products</Text>
       <Link href="../specifyCondition" asChild>
+        {/*
+      <Link href="../quizResult" asChild>
+      */}
+
         <TouchableHighlight style={styles.button} underlayColor="#5d680e">
           <Text style={styles.buttonText}>Specify Your Skin Condition</Text>
         </TouchableHighlight>
@@ -37,13 +34,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#0D332A",
   },
-  //   imageContainer: {
-  //     flex: 1,
-  //     backgroundColor: '#FFF',
-  //     alignItems: 'center',
-  //     justifyContent: 'center',
-  //     zIndex: 100,
-  //   },
+  images: {
+    width: "80%",
+  },
   title: {
     fontFamily: "PlayfairDisplay-SemiBold",
     fontSize: 60,

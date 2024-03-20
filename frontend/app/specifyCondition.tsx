@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, FlatList } from "react-native";
-
-import EditScreenInfo from "@/components/EditScreenInfo";
+import { StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native"; // Import Dimensions
+import { useNavigation } from "@react-navigation/native";
 import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
 import List from "@/components/List";
@@ -12,12 +11,15 @@ import {BACKEND_URL} from '@env'
 const API_URL = `${BACKEND_URL}/api/v1/profile/get_skin_types_cond`;
 
 const SpecifyConditionScreen = () => {
+  const navigation = useNavigation();
+  const windowWidth = Dimensions.get("window").width; // Get window width
+
   const [searchPhrase, setSearchPhrase] = useState("");
   const [clicked, setClicked] = useState(false);
-  const [optionClicked, setOptionClicked] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]); // To store selected options
   const [skinTypesConditions, setSkinTypesConditions] = useState(null);
+  const [isNextDisabled, setIsNextDisabled] = useState(true); // State variable to track if Next button should be disabled
 
-  //Get data from the fake api endpoint
   useEffect(() => {
     const getData = async () => {
       try {
@@ -25,13 +27,68 @@ const SpecifyConditionScreen = () => {
         setSkinTypesConditions(
           response.data.skin_types_conditions.skin_conditions_option,
         );
-        console.log(response.data.skin_types_conditions.skin_conditions_option);
       } catch (error) {
-        return Promise.reject(error);
+        // Handle error
       }
     };
     getData();
   }, []);
+
+  useEffect(() => {
+    // Update isNextDisabled based on selectedOptions
+    setIsNextDisabled(selectedOptions.length === 0);
+  }, [selectedOptions]);
+
+  const handleOptionClick = (option) => {
+    setSelectedOptions([...selectedOptions, option]); // Add selected option to the list
+  };
+
+  const removeOption = (optionToRemove) => {
+    setSelectedOptions(
+      selectedOptions.filter((option) => option !== optionToRemove),
+    );
+  };
+
+  // Function to wrap selected options into rows
+  const renderOptions = () => {
+    let rows = [];
+    let row = [];
+    let totalWidth = 0;
+
+    selectedOptions.forEach((option, index) => {
+      const optionWidth = option.length * 10 + 40; // Rough estimation of option width
+      if (totalWidth + optionWidth > windowWidth) {
+        rows.push(row);
+        row = [option];
+        totalWidth = optionWidth;
+      } else {
+        row.push(option);
+        totalWidth += optionWidth;
+      }
+    });
+
+    if (row.length > 0) {
+      rows.push(row);
+    }
+
+    return rows.map((row, rowIndex) => (
+      <View key={rowIndex} style={styles.selectedOptionsRow}>
+        {row.map((option, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.selectedOptionBubble}
+            onPress={() => removeOption(option)}
+          >
+            <Text>{option}</Text>
+            <Image
+              source={require("@/assets/images/x_icon.png")}
+              style={styles.xIcon}
+            />
+          </TouchableOpacity>
+        ))}
+      </View>
+    ));
+  };
 
   return (
     <View style={styles.container}>
@@ -54,21 +111,29 @@ const SpecifyConditionScreen = () => {
         clicked={clicked}
         setClicked={setClicked}
       />
+      <View style={styles.selectedOptionsContainer}>{renderOptions()}</View>
       {clicked ? (
         <List
           searchPhrase={searchPhrase}
           data={skinTypesConditions}
-          setClicked={setOptionClicked}
+          setClicked={setClicked}
+          onOptionClick={handleOptionClick}
         />
       ) : (
-        <Link href="/skinQuiz1" asChild>
-          <Text style={styles.body}>
-            I don't have any skin conditions or allergies.
-          </Text>
-        </Link>
+        <Text
+          style={styles.body}
+          onPress={() => navigation.navigate("skinQuiz1")}
+        >
+          I don't have any skin conditions or allergies.
+        </Text>
       )}
-
-      {optionClicked ? console.log("clicked") : console.log("not clicked")}
+      <TouchableOpacity
+        style={[styles.nextButton, { opacity: isNextDisabled ? 0.5 : 1 }]} // Lower opacity if disabled
+        onPress={() => navigation.navigate("skinQuiz1")}
+        disabled={isNextDisabled} // Disable button if no options are selected
+      >
+        <Text style={{ color: "black" }}>Next</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -92,16 +157,39 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
     bottom: 100,
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
-  },
-  item: {
-    backgroundColor: "#f5f5f5",
-    padding: 10,
-    marginVertical: 8,
+    backgroundColor: "rgba(0,0,0,0.05)",
     borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  selectedOptionsContainer: {
+    marginTop: 20,
+  },
+  selectedOptionsRow: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  selectedOptionBubble: {
+    backgroundColor: "#e0e0e0",
+    borderRadius: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    margin: 5,
+  },
+  xIcon: {
+    width: 12,
+    height: 12,
+    marginLeft: 5,
+  },
+  nextButton: {
+    backgroundColor: "#D1E543",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    marginTop: 30,
   },
 });
