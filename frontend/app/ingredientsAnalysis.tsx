@@ -1,9 +1,11 @@
-import { Text, StyleSheet, Image, FlatList, TouchableOpacity } from 'react-native'
+import { Text, StyleSheet, Image, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native'
 import React from 'react'
 import { View } from '@/components/Themed';
 import { useState, useEffect, useRef } from 'react';
 import PagerView from 'react-native-pager-view';
 import axios from "axios";
+import {SUPABASE_API_URL} from '@env'
+
 const CircleRisk = ({ circleColor }) => {
     return (
         <TouchableOpacity style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -20,6 +22,22 @@ type IngredientItemProps = {
 }
 
 const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
+    const [ingredientInfo, setIngredientInfo] = useState<string | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    useEffect(() => {
+        const fetchIngredientInfo = async () => {
+            try {
+                const response = await axios.get(`${SUPABASE_API_URL}/api/v1/ingredients/1/AI?ingredient_name=${name}`);
+                setIngredientInfo(response.data.response);
+            } catch (error) {
+                console.error('Error fetching ingredient info:', error);
+                setIngredientInfo('Error fetching ingredient info');
+            }
+        };
+
+        fetchIngredientInfo();
+    }, [name]);
+
     let backgroundColor, textColor;
     if (confidence >= 0 && confidence <= 0.3) {
         backgroundColor = '#FFCACA'; // Reddish background
@@ -34,17 +52,79 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
         backgroundColor = '#FFFFFF'; // Default background
         textColor = '#000000'; // Default text color
     }
-
-    return (<View style={[styles.ingredientBox, { backgroundColor }]}>
-        <Text style={{ color: textColor, fontWeight: '700' }}>{name}</Text>
-        <Text>Confidence Level:{confidence.toFixed(3)}</Text>
-    </View>)
+    const formattedText = ingredientInfo?.split('**').map((part, index) => {
+        if (index % 2 === 1) {
+            return <Text key={index} style={{ fontWeight: 'bold' }}>{part}</Text>;
+        } else {
+            const bulletPointText = part.replace(/\*/g, '\u2022 ');
+            return <Text key={index}>{bulletPointText}</Text>;
+        }
+    });
+    return (
+        <TouchableOpacity>
+            <View style={[styles.ingredientBox, { backgroundColor }]}>
+                <Text style={{ color: textColor, fontWeight: '700' }}>{name}</Text>
+                <Text>Confidence Level: {confidence.toFixed(3)}</Text>
+                <TouchableOpacity onPress={() => setModalVisible(true)}>
+                    <Text>View Details</Text>
+                </TouchableOpacity>
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={modalVisible}
+                    onRequestClose={() => {
+                        setModalVisible(false);
+                    }}
+                >
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        }}
+                    >
+                        <View
+                            style={{
+                                marginHorizontal: 20,
+                                backgroundColor: 'white',
+                                borderRadius: 20,
+                                paddingHorizontal: 35,
+                                paddingTop: 35,
+                                paddingBottom: 10,
+                                alignItems: 'center',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 4,
+                                elevation: 5,
+                                maxHeight: '80%',
+                            }}
+                        >
+                            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingRight: 20 }}>
+                                <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 10 }}>{name}</Text>
+                                <Text>Confidence Level: {confidence.toFixed(3)}</Text>
+                                <Text>{formattedText}</Text>
+                            </ScrollView>
+                            <TouchableOpacity onPress={() => setModalVisible(false)} style={{ backgroundColor: '#3E5B20', marginTop: 10, borderRadius: 5, paddingVertical:5, paddingHorizontal:8 }}>
+                                <Text style={{ color: 'white' }}>Close</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        </TouchableOpacity>
+    )
 }
 
 type ReviewItemProps = {
-    negativeReaction: boolean; rating: number, description: string
+    Profile: any;
+    negativeReaction: boolean; rating: number, description: string, reviewerName: string
 }
-const ReviewItem = ({ rating, description, negativeReaction }: ReviewItemProps) => {
+const ReviewItem = ({ rating, description, negativeReaction, reviewerName }: ReviewItemProps) => {
     const getStarImage = (rating: number) => {
         switch (rating) {
             case 1:
@@ -63,15 +143,17 @@ const ReviewItem = ({ rating, description, negativeReaction }: ReviewItemProps) 
     };
     return (
         <View style={styles.review}>
-            <Text style={{ fontWeight: '700' }}>Beatrice</Text>
+            <Text style={{ fontWeight: '700' }}>{reviewerName}</Text>
             <Image source={getStarImage(rating)}></Image>
-            <Text style={{color: 'grey', marginBottom: 2}}>{negativeReaction == true ? "Experienced a negative reaction":"Did not experience any negative reactions"}</Text>
+            <Text style={{ color: 'grey', marginBottom: 2 }}>{negativeReaction == true ? "Experienced a negative reaction" : "Did not experience any negative reactions"}</Text>
             <Text>{description}</Text>
         </View>
     );
 }
 
 const Analysis = () => {
+    // console.log(Config)
+
     const pagerRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(0);
     const setPage = (page) => {
@@ -88,7 +170,7 @@ const Analysis = () => {
     }, []);
 
     const fetchIngredients = async () => {
-        const API_URL = 'http://13.229.232.103:3000/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil'
+        const API_URL = `${SUPABASE_API_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`
         try {
             const response = await axios.get(API_URL);
             setIngredients(response.data?.output)
@@ -98,7 +180,7 @@ const Analysis = () => {
     }
 
     const fetchReviews = async () => {
-        const API_URL = 'http://13.229.232.103:3000/api/v1/products/1/reviews';
+        const API_URL = `${SUPABASE_API_URL}/api/v1/products/1/reviews`;
         try {
             const conditions = ["eczema", "acne"];
             const requestBody = { conditions };
@@ -199,6 +281,7 @@ const Analysis = () => {
                         </View>
                     </View>
                     <View style={styles.ingredientsRiskSection}>
+                        <Text>Tap on ingredients to view potential side effects</Text>
                         <FlatList
                             data={sortedIngredients}
                             renderItem={({ item }) =>
@@ -210,11 +293,9 @@ const Analysis = () => {
                 <View style={styles.page} key="1">
 
                     <View style={styles.topHalf}>
-                        <View style={{ display: 'flex', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 22, fontWeight: '700' }}>Reviews from individuals who share similar skin conditions and have previously tried this product</Text>
-                        </View>
                         <View>
                             <View style={styles.effectiveness}>
+                                <Text>Reviews from individuals who share similar skin conditions and have previously tried this product</Text>
                                 <View style={{
                                     display: 'flex',
                                     flexDirection: 'row',
@@ -222,7 +303,6 @@ const Analysis = () => {
                                     alignItems: 'center'
                                 }}>
                                     <View>
-                                        <Text>Effectiveness Rating</Text>
                                         <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                             <Image source={require('../assets/images/5stars.png')}></Image>
                                             <Text style={{ marginLeft: 10 }}>{ratingsCount[4]}</Text>
@@ -245,7 +325,7 @@ const Analysis = () => {
                                         </View>
                                     </View>
                                     <View>
-                                        <Text style={{ fontWeight: 700, fontSize: 18, color: '#3E5B20' }}>{meanRating.toFixed(1)}/5.0</Text>
+                                        <Text style={{ fontWeight: '700', fontSize: 25, color: '#3E5B20' }}>{meanRating.toFixed(1)}/5.0</Text>
                                         <Text>{reviews.length} reviews</Text>
                                     </View>
                                 </View>
@@ -259,7 +339,7 @@ const Analysis = () => {
                             <FlatList
                                 data={reviews}
                                 renderItem={({ item }) =>
-                                    <ReviewItem rating={item.rating} description={item.description} negativeReaction={item.negativeReaction}/>
+                                    <ReviewItem rating={item.rating} description={item.description} negativeReaction={item.negativeReaction} reviewerName={item?.Profile?.Account.name} Profile={undefined} />
                                 }
                             // keyExtractor={(item) => item.review_id.toString()}
                             />
@@ -295,8 +375,7 @@ const styles = StyleSheet.create({
     },
     topHalf: {
         paddingHorizontal: 40,
-        paddingBottom: 15,
-        paddingTop: 30
+        paddingVertical: 15,
     },
     riskLevel: {
         display: 'flex',
@@ -341,7 +420,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         justifyContent: 'space-between',
-        marginVertical: 10,
+        marginBottom: 10,
     },
     review: {
         display: 'flex',
