@@ -76,34 +76,8 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
                         setModalVisible(false);
                     }}
                 >
-                    <View
-                        style={{
-                            flex: 1,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        }}
-                    >
-                        <View
-                            style={{
-                                marginHorizontal: 20,
-                                backgroundColor: 'white',
-                                borderRadius: 20,
-                                paddingHorizontal: 35,
-                                paddingTop: 35,
-                                paddingBottom: 10,
-                                alignItems: 'center',
-                                shadowColor: '#000',
-                                shadowOffset: {
-                                    width: 0,
-                                    height: 2,
-                                },
-                                shadowOpacity: 0.25,
-                                shadowRadius: 4,
-                                elevation: 5,
-                                maxHeight: '80%',
-                            }}
-                        >
+                    <View style={styles.modalView1}>
+                        <View style={styles.modalView2}>
                             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingRight: 20 }}>
                                 <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 10 }}>{name}</Text>
                                 <Text>Confidence Level: {confidence.toFixed(3)}</Text>
@@ -428,4 +402,28 @@ const styles = StyleSheet.create({
         backgroundColor: '#E9F4E4',
         borderRadius: 15
     },
+    modalView1:{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalView2:{
+        marginHorizontal: 20,
+        backgroundColor: 'white',
+        borderRadius: 20,
+        paddingHorizontal: 35,
+        paddingTop: 35,
+        paddingBottom: 10,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        maxHeight: '80%',
+    }
 });
