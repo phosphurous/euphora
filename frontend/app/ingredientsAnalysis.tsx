@@ -1,11 +1,11 @@
-import { Text, StyleSheet, Image, FlatList, TouchableOpacity, Modal, ScrollView } from 'react-native'
+import { Text, StyleSheet, Image, FlatList, TouchableOpacity, Modal, ScrollView, ActivityIndicator } from 'react-native'
 import React from 'react'
 import { View } from '@/components/Themed';
 import { useState, useEffect, useRef } from 'react';
 import PagerView from 'react-native-pager-view';
 import axios from "axios";
-import {BACKEND_URL} from '@env'
-
+import { BACKEND_URL } from '@env'
+const BACKEND_URL_TEMP = "https://m6rm2v01-3000.asse.devtunnels.ms"
 const CircleRisk = ({ circleColor }) => {
     return (
         <TouchableOpacity style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -24,19 +24,20 @@ type IngredientItemProps = {
 const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
     const [ingredientInfo, setIngredientInfo] = useState<string | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
-    useEffect(() => {
-        const fetchIngredientInfo = async () => {
-            try {
-                const response = await axios.get(`${BACKEND_URL}/api/v1/ingredients/1/AI?ingredient_name=${name}`);
-                setIngredientInfo(response.data.response);
-            } catch (error) {
-                console.error('Error fetching ingredient info:', error);
-                setIngredientInfo('Error fetching ingredient info');
-            }
-        };
+    const [loading, setLoading] = useState<boolean>(false);
 
-        fetchIngredientInfo();
-    }, [name]);
+    const handleClick = async (ingredientName: string) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(`${BACKEND_URL_TEMP}/api/v1/ingredients/1/AI?ingredient_name=${ingredientName}`);
+            setIngredientInfo(response.data.response);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            setIngredientInfo('Error fetching ingredient info');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     let backgroundColor, textColor;
     if (confidence >= 0 && confidence <= 0.3) {
@@ -61,13 +62,11 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
         }
     });
     return (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => { setModalVisible(true); handleClick(name) }}>
             <View style={[styles.ingredientBox, { backgroundColor }]}>
                 <Text style={{ color: textColor, fontWeight: '700' }}>{name}</Text>
                 <Text>Confidence Level: {confidence.toFixed(3)}</Text>
-                <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <Text>View Details</Text>
-                </TouchableOpacity>
+
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -77,16 +76,22 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
                     }}
                 >
                     <View style={styles.modalView1}>
-                        <View style={styles.modalView2}>
-                            <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingRight: 20 }}>
-                                <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 10 }}>{name}</Text>
-                                <Text>Confidence Level: {confidence.toFixed(3)}</Text>
-                                <Text>{formattedText}</Text>
-                            </ScrollView>
-                            <TouchableOpacity onPress={() => setModalVisible(false)} style={{ backgroundColor: '#3E5B20', marginTop: 10, borderRadius: 5, paddingVertical:5, paddingHorizontal:8 }}>
-                                <Text style={{ color: 'white' }}>Close</Text>
-                            </TouchableOpacity>
-                        </View>
+                        {loading ? (
+                            <View style={styles.loadingModal}>
+                                <Text style={{marginVertical: 30}}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+                            </View>) :
+                            (<View style={styles.modalView2}>
+                                <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingRight: 20 }}>
+                                    <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 10 }}>{name}</Text>
+                                    <Text>Confidence Level: {confidence.toFixed(3)}</Text>
+                                    <Text>{formattedText}</Text>
+                                </ScrollView>
+                                <TouchableOpacity onPress={() => setModalVisible(false)} style={{ backgroundColor: '#3E5B20', marginTop: 10, borderRadius: 5, paddingVertical: 5, paddingHorizontal: 8 }}>
+                                    <Text style={{ color: 'white' }}>Close</Text>
+                                </TouchableOpacity>
+                            </View>)}
+
+
                     </View>
                 </Modal>
             </View>
@@ -126,7 +131,6 @@ const ReviewItem = ({ rating, description, negativeReaction, reviewerName }: Rev
 }
 
 const Analysis = () => {
-    // console.log(Config)
 
     const pagerRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(0);
@@ -144,7 +148,7 @@ const Analysis = () => {
     }, []);
 
     const fetchIngredients = async () => {
-        const API_URL = `${BACKEND_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`
+        const API_URL = `${BACKEND_URL_TEMP}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`
         try {
             const response = await axios.get(API_URL);
             setIngredients(response.data?.output)
@@ -154,13 +158,12 @@ const Analysis = () => {
     }
 
     const fetchReviews = async () => {
-        const API_URL = `${BACKEND_URL}/api/v1/products/1/reviews`;
+        const API_URL = `${BACKEND_URL_TEMP}/api/v1/products/1/reviews`;
         try {
             const conditions = ["eczema", "acne"];
             const requestBody = { conditions };
             const response = await axios.post(API_URL, requestBody);
             setReviews(response.data?.data);
-            // console.log(reviews)
         } catch (error) {
             console.error("Error fetching data:", error)
         }
@@ -180,9 +183,6 @@ const Analysis = () => {
     const negativeReactionsCount = reviews.filter(review => review?.negativeReaction).length;
     const percentageNegativeReactions = (negativeReactionsCount / reviews.length) * 100;
 
-    // console.log("Ratings Count:", ratingsCount);
-    // console.log("Mean Rating:", meanRating);
-    // console.log("Percentage Negative Reactions:", percentageNegativeReactions);
     const sortedIngredients = ingredients.sort((a, b) => {
         return a.confidence - b.confidence;
     });
@@ -220,7 +220,7 @@ const Analysis = () => {
                 <View style={styles.container}>
                     <View style={styles.topHalf}>
                         <View style={{ display: 'flex', alignItems: 'center' }}>
-                            <Text style={{ fontSize: 22, fontWeight: 700 }}>5 harmful ingredients found</Text>
+                            <Text style={{ fontSize: 22, fontWeight: 700 }}>Harmful ingredients found</Text>
                         </View>
                         <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                             <View style={styles.riskLevel}>
@@ -402,13 +402,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#E9F4E4',
         borderRadius: 15
     },
-    modalView1:{
+    modalView1: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    modalView2:{
+    modalView2: {
         marginHorizontal: 20,
         backgroundColor: 'white',
         borderRadius: 20,
@@ -425,5 +425,15 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 5,
         maxHeight: '80%',
+    },
+    loadingModal: {
+        backgroundColor: '#E9F4E4',
+        height: 200,
+        width: 200,
+        marginHorizontal: 20,
+        borderRadius: 20,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent:'center'
     }
 });
