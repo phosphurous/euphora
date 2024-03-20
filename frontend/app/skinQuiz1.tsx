@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#E9F4E4",
   },
   pressedOption: {
-    opacity: 0.5,
+    opacity: 0.3,
   },
   optionText: {
     fontSize: 16,
@@ -190,15 +190,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   backButtonPressed: {
-    opacity: 0.5,
+    opacity: 0.3,
   },
   nextButton: {},
   nextButtonPressed: {
-    opacity: 0.5,
+    opacity: 0.3,
   },
   submitButton: {},
   submitButtonPressed: {
-    opacity: 0.5,
+    opacity: 0.3,
   },
   buttonText: {
     fontFamily: "Inter-Bold",
