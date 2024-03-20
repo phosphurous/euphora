@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleSheet, Pressable } from "react-native";
 import { Text, View } from "@/components/Themed";
+import { useNavigation } from "@react-navigation/native"; // Import useNavigation hook
 
 export default function SkinQuiz1() {
   const [selectedOptions, setSelectedOptions] = React.useState<
@@ -51,6 +52,8 @@ export default function SkinQuiz1() {
     },
   ]);
 
+  const navigation = useNavigation(); // Access the navigation object
+
   const handleOptionPress = (optionIndex: number) => {
     const newSelectedOptions = [...selectedOptions];
     newSelectedOptions[currentQuestionIndex] = optionIndex;
@@ -65,6 +68,11 @@ export default function SkinQuiz1() {
 
   const handlePreviousQuestion = () => {
     setCurrentQuestionIndex((prevIndex) => Math.max(prevIndex - 1, 0));
+  };
+
+  const handleQuizResult = () => {
+    // Navigate to the "quizResult" screen
+    navigation.navigate("quizResult", { selectedOptions });
   };
 
   return (
@@ -116,7 +124,7 @@ export default function SkinQuiz1() {
           ]}
           onPress={
             currentQuestionIndex === questions.length - 1
-              ? () => console.log("Submit", selectedOptions)
+              ? handleQuizResult // Call handleQuizResult function when it's the last question
               : handleNextQuestion
           }
           disabled={selectedOptions[currentQuestionIndex] === null}

@@ -25,7 +25,7 @@ const SpecifyConditionScreen = () => {
         );
         console.log(response.data.skin_types_conditions.skin_conditions_option);
       } catch (error) {
-        return Promise.reject(error);
+//         return Promise.reject(error);
       }
     };
     getData();
