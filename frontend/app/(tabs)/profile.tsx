@@ -1,9 +1,12 @@
 import { StyleSheet, TouchableOpacity, Image } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Image source={require("@/assets/images/profile_pic.png")} />
@@ -28,7 +31,10 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.selectedOptionsRow}>
-        <TouchableOpacity style={styles.selectedOptionBubble}>
+        <TouchableOpacity
+          style={styles.selectedOptionBubble}
+          onPress={() => navigation.navigate("harmfulList")}
+        >
           <Image source={require("@/assets/images/pencil_icon.png")} />
           <Text style={styles.body}>Harmful Ingredients</Text>
           <Image source={require("@/assets/images/rightarrow_icon.png")} />

@@ -72,9 +72,10 @@ function RootLayoutNav() {
           options={{ title: "Analysis" }}
         />
         <Stack.Screen name="skinQuiz1" options={{ title: "Skin Quiz" }} />
+        <Stack.Screen name="quizResult" options={{ title: "Quiz Result" }} />
         <Stack.Screen
-          name="quizResult"
-          options={{ title: "Quiz Result", tabBarVisible: true }}
+          name="harmfulList"
+          options={{ title: "Harmful Ingredients" }}
         />
       </Stack>
     </ThemeProvider>
