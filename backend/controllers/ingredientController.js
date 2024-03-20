@@ -157,7 +157,7 @@ const get_AI_repsonse_on_allergy = async (req, res) => {
         return res.status(200).json({"response": text});
         
     } catch (error) {
-        return res.status(200).json({"response": "please try again later", message: "Don't spam api pls", error: error});
+        return res.status(400).json({"response": "please try again later", message: "Don't spam api pls", error: error});
     }
     // return res.status(200).json({text});
 }
