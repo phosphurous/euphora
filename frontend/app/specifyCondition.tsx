@@ -127,9 +127,9 @@ const SpecifyConditionScreen = () => {
         </Text>
       )}
       <TouchableOpacity
-        style={[styles.nextButton, { opacity: isNextDisabled ? 0.5 : 1 }]} // Lower opacity if disabled
+        style={[styles.nextButton, { opacity: isNextDisabled ? 0.5 : 1 }]}
         onPress={() => navigation.navigate("skinQuiz1")}
-        disabled={isNextDisabled} // Disable button if no options are selected
+        disabled={isNextDisabled}
       >
         <Text style={{ color: "black" }}>Next</Text>
       </TouchableOpacity>
