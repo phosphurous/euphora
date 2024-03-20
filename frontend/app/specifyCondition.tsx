@@ -7,9 +7,9 @@ import SearchBar from "@/components/SearchBar";
 import List from "@/components/List";
 import axios from "axios";
 import { Link } from "expo-router";
-import {SUPABASE_API_URL} from '@env'
+import {BACKEND_URL} from '@env'
 
-const API_URL = `${SUPABASE_API_URL}/api/v1/profile/get_skin_types_cond`;
+const API_URL = `${BACKEND_URL}/api/v1/profile/get_skin_types_cond`;
 
 const SpecifyConditionScreen = () => {
   const [searchPhrase, setSearchPhrase] = useState("");

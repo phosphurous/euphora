@@ -4,7 +4,7 @@ import { View } from '@/components/Themed';
 import { useState, useEffect, useRef } from 'react';
 import PagerView from 'react-native-pager-view';
 import axios from "axios";
-import {SUPABASE_API_URL} from '@env'
+import {BACKEND_URL} from '@env'
 
 const CircleRisk = ({ circleColor }) => {
     return (
@@ -27,7 +27,7 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
     useEffect(() => {
         const fetchIngredientInfo = async () => {
             try {
-                const response = await axios.get(`${SUPABASE_API_URL}/api/v1/ingredients/1/AI?ingredient_name=${name}`);
+                const response = await axios.get(`${BACKEND_URL}/api/v1/ingredients/1/AI?ingredient_name=${name}`);
                 setIngredientInfo(response.data.response);
             } catch (error) {
                 console.error('Error fetching ingredient info:', error);
@@ -144,7 +144,7 @@ const Analysis = () => {
     }, []);
 
     const fetchIngredients = async () => {
-        const API_URL = `${SUPABASE_API_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`
+        const API_URL = `${BACKEND_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`
         try {
             const response = await axios.get(API_URL);
             setIngredients(response.data?.output)
@@ -154,7 +154,7 @@ const Analysis = () => {
     }
 
     const fetchReviews = async () => {
-        const API_URL = `${SUPABASE_API_URL}/api/v1/products/1/reviews`;
+        const API_URL = `${BACKEND_URL}/api/v1/products/1/reviews`;
         try {
             const conditions = ["eczema", "acne"];
             const requestBody = { conditions };
