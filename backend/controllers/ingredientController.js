@@ -150,12 +150,15 @@ const get_AI_repsonse_on_allergy = async (req, res) => {
     // const test1 = "I have oily skin type and the following conditions eczema, acne, psoriasis, and I am allergic to  water, glycerol, what are the possible sideeffects if i were to use a skin care product with niacinanmide?"
     // const test2 = "what are the some issues "
     
-
-    const result = await model.generateContent(query);
-    const response = await result.response;
-    const text = response.text();
-    
-    return res.status(200).json({"response": text});
+    try {
+        const result = await model.generateContent(query);
+        const response = await result.response;
+        const text = response.text();
+        return res.status(200).json({"response": text});
+        
+    } catch (error) {
+        return res.status(400).json({"response": "please try again later", message: "Don't spam api pls", error: error});
+    }
     // return res.status(200).json({text});
 }
 
