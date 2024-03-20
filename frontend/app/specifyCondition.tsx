@@ -89,5 +89,9 @@ const styles = StyleSheet.create({
     textAlign: "center",
     position: "absolute",
     bottom: 100,
+    backgroundColor: "rgba(0,0,0,0.05)",
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
   },
 });

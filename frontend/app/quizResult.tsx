@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Image, TouchableOpacity } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
@@ -6,12 +6,21 @@ import { Text, View } from "@/components/Themed";
 export default function quizResult() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Quiz Result</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
-      />
+      <Image source={require('@/assets/images/profile_pic.png')} />
+      <Text
+        style={{
+          fontFamily: "PlayfairDisplay-SemiBold",
+          fontSize: 35,
+          marginTop: 40,
+        }}
+      >
+        You have oily skin.
+      </Text>
+      <TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16 }}>
+          <Text style={{ fontSize: 18, flex: 1, }}>Skin Conditions & Allergies</Text>
+        </View>
+      </TouchableOpacity>
       <EditScreenInfo path="app/quizResult.tsx" />
     </View>
   );
