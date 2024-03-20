@@ -14,10 +14,9 @@ export default function TabOneScreen() {
         darkColor="rgba(255,255,255,0.1)"
       />
       <Text style={styles.body}>Rediscover Your Skincare Products</Text>
-      <Link href="../quizResult" asChild>
-
-      {/*
       <Link href="../specifyCondition" asChild>
+        {/*
+      <Link href="../quizResult" asChild>
       */}
 
         <TouchableHighlight style={styles.button} underlayColor="#5d680e">
@@ -36,8 +35,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D332A",
   },
   images: {
-    width: '80%',
-
+    width: "80%",
   },
   title: {
     fontFamily: "PlayfairDisplay-SemiBold",

@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,
-    backgroundColor: "#0D332A",
+    backgroundColor: "#D1E543",
   },
   backButton: {
     marginRight: 10,
@@ -201,7 +201,8 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   buttonText: {
-    color: "white",
+    fontFamily: "Inter-Bold",
+    color: "#000",
     fontSize: 16,
   },
 });

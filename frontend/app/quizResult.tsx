@@ -1,27 +1,38 @@
-import { StyleSheet, Image, TouchableOpacity } from "react-native";
-
+import {
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Pressable,
+  TouchableHighlight,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
+import { Link } from "expo-router";
 
 export default function quizResult() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
-      <Image source={require('@/assets/images/profile_pic.png')} />
+      <Image source={require("@/assets/images/profile_pic.png")} />
       <Text
         style={{
           fontFamily: "PlayfairDisplay-SemiBold",
           fontSize: 35,
           marginTop: 40,
+          textAlign: "center",
         }}
       >
-        You have oily skin.
+        You have combination skin.
       </Text>
-      <TouchableOpacity>
-        <View style={{ flexDirection: 'row', alignItems: 'center', padding: 16 }}>
-          <Text style={{ fontSize: 18, flex: 1, }}>Skin Conditions & Allergies</Text>
-        </View>
-      </TouchableOpacity>
-      <EditScreenInfo path="app/quizResult.tsx" />
+      <TouchableHighlight
+        style={styles.button}
+        underlayColor="#5d680e"
+        onPress={() => navigation.navigate("profile")}
+      >
+        <Text style={styles.buttonText}>Go to Profile</Text>
+      </TouchableHighlight>
     </View>
   );
 }
@@ -36,9 +47,17 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
   },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
+  button: {
+    marginTop: 60,
+    padding: 20,
+    backgroundColor: "#D1E543",
+    borderRadius: 10,
+    width: "70%",
+    alignItems: "center",
+  },
+  buttonText: {
+    fontFamily: "Inter-Bold",
+    color: "#000",
+    fontSize: 16,
   },
 });
