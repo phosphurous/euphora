@@ -2,12 +2,15 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import Navigation from "./Navigation"; // Import the Navigation component
+import { StyledProvider } from "@gluestack-ui/themed";
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Navigation />
-    </NavigationContainer>
+    <StyledProvider>
+      <NavigationContainer>
+        <Navigation />
+      </NavigationContainer>
+    </StyledProvider>
   );
 }
 
