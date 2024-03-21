@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
     },
     topHalf: {
         paddingHorizontal: 40,
-        paddingVertical: 15,
+        paddingVertical: 5,
     },
     riskLevel: {
         display: 'flex',
