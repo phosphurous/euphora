@@ -8,11 +8,12 @@ import {
   AccordionContent,
   AccordionTitleText,
   AccordionIcon,
-  ChevronUpIcon,
   AccordionContentText,
   GluestackUIStyledProvider,
   StyledProvider,
 } from "@gluestack-ui/themed";
+import { ChevronUpIcon } from "lucide-react-native";
+import { ChevronDownIcon } from "lucide-react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
@@ -21,18 +22,24 @@ export default function HarmfulListScreen() {
   const navigation = useNavigation();
 
   return (
-    <StyledProvider>
+    <View style={styles.container}>
       <Accordion
         m="$5"
-        width="90%"
-        size="md"
-        variant="filled"
+        width="80%"
+        size="lg"
+        variant="unfilled"
         type="single"
+        borderWidth={1}
         isCollapsible={true}
         isDisabled={false}
+        style={styles.body}
       >
         <AccordionItem value="a">
-          <AccordionHeader>
+          <AccordionHeader
+            backgroundColor="white"
+            fontFamily="Inter-SemiBold"
+            fontSize={30}
+          >
             <AccordionTrigger>
               {({ isExpanded }) => {
                 return (
@@ -40,11 +47,11 @@ export default function HarmfulListScreen() {
                     <AccordionTitleText>
                       How do I place an order?
                     </AccordionTitleText>
-                    {/*                     {isExpanded ? ( */}
-                    {/*                       <AccordionIcon as={ChevronUpIcon} ml="$3"/> */}
-                    {/*                     ) : ( */}
-                    {/*                       <AccordionIcon as={ChevronDownIcon} ml="$3"/> */}
-                    {/*                     )} */}
+                    {isExpanded ? (
+                  <AccordionIcon as={ChevronUpIcon} />
+                ) : (
+                  <AccordionIcon as={ChevronDownIcon} />
+                )}
                   </>
                 );
               }}
@@ -59,6 +66,7 @@ export default function HarmfulListScreen() {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="b">
+
           <AccordionHeader>
             <AccordionTrigger>
               {({ isExpanded }) => {
@@ -67,25 +75,23 @@ export default function HarmfulListScreen() {
                     <AccordionTitleText>
                       What payment methods do you accept?
                     </AccordionTitleText>
-                    {/*                     {isExpanded ? ( */}
-                    {/*                       <AccordionIcon as={ChevronUpIcon} ml="$3"/> */}
-                    {/*                     ) : ( */}
-                    {/*                       <AccordionIcon as={ChevronDownIcon} ml="$3"/> */}
-                    {/*                     )} */}
                   </>
                 );
               }}
             </AccordionTrigger>
           </AccordionHeader>
-          <AccordionContent>
+
+          <AccordionContent pb="$0">
             <AccordionContentText>
-              We accept all major credit cards, including Visa, Mastercard, and
-              American Express. We also support payments through PayPal.
+              Text 1
+            </AccordionContentText>
+            <AccordionContentText>
+              Text 2
             </AccordionContentText>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-    </StyledProvider>
+    </View>
   );
 }
 
@@ -112,7 +118,7 @@ const styles = StyleSheet.create({
   },
   body: {
     fontFamily: "Inter-SemiBold",
-    fontSize: 16,
+    fontSize: 32,
     textAlign: "center",
     paddingHorizontal: 12,
     flex: 1,

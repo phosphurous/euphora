@@ -39,6 +39,7 @@
     "expo-system-ui": "~2.9.3",
     "expo-web-browser": "~12.8.2",
     "gluestack-ui": "^0.5.2",
+    "lucide-react-native": "^0.359.0",
     "native-base": "^3.4.28",
     "nativewind": "^2.0.11",
     "ocr-space-api-wrapper": "^2.3.0",
