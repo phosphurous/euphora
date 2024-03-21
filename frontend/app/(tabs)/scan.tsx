@@ -171,12 +171,16 @@ export default function ScanScreen() {
             {/* {image && <Image source={{uri: image}} style={{flex:1}}/>} */}
         {/* </View> */}
       <Text style={styles.title}>Scan</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+      <View
+        style={styles.separator}
+        lightColor="#eee"
+        darkColor="rgba(255,255,255,0.1)"
+      />
       {/* <EditScreenInfo path="app/(tabs)/scan.tsx" /> */}
       <View>
-      <Link href="/(ingredients)/ingredientsAnalysis" asChild>
-         <Text>Link to analysis page</Text>
-      </Link>
+        <Link href="/ingredientsAnalysis" asChild>
+          <Text>Link to analysis page</Text>
+        </Link>
       </View>
     </View>
   );
@@ -184,59 +188,18 @@ export default function ScanScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Fill the entire screen
-    justifyContent: 'flex-end', // Align children to the bottom
-    alignItems: 'center', // Center children horizontally
-  },
-  buttonContainer: {
-    marginTop: 20,
-    marginBottom: 50,
-    flexDirection: 'row', // Align children horizontally
-    justifyContent: 'center', // Center the content horizontally
-    alignItems: 'center', // Center the content vertically
-    width: '100%', // Take the full width
-  },
-  circularButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: 'grey',
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
-    elevation: 3,
-    shadowOffset: { width: 1, height: 1 },
-    shadowColor: 'black',
-    shadowOpacity: 0.3,
-    shadowRadius: 3,
-    marginHorizontal: 50, // Add space between the grey and blue button
-  },
-  uploadButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
     justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: "black",
-    borderWidth: 1,
-    // Remove marginLeft if it's no longer necessary
-  },
-  buttonText: {
-      color: 'white', // Button text color
-      fontSize: 16, // Adjust your size
-      fontWeight: 'bold',
-  },
-  uploadButtonImage: {
-    width: '100%',
-    height: '100%',
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: '80%',
+    width: "80%",
   },
 });
 
