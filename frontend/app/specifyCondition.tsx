@@ -5,9 +5,10 @@ import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
 import List from "@/components/List";
 import axios from "axios";
-import { BACKEND_URL } from "@env";
+import { Link } from "expo-router";
+import {BACKEND_URL} from '@env'
 
-const API_URL = BACKEND_URL + "/api/v1/profile/get_skin_types_cond";
+const API_URL = `${BACKEND_URL}/api/v1/profile/get_skin_types_cond`;
 
 const SpecifyConditionScreen = () => {
   const navigation = useNavigation();
