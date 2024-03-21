@@ -77,7 +77,7 @@ const get_allergy_confidence_of_ingredient_list_in_image = async(req,res) => {
                 }
             }
         }
-        test_output.push({"ingredient_in_list": ingredient, "max_score":max_score, "nearest_allergy":nearest_allergy})
+        test_output.push({"name": ingredient, "confidence":max_score, "nearest_allergy":nearest_allergy})
     }
     return res.status(200).json(test_output);
 
