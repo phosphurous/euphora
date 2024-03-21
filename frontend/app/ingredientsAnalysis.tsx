@@ -5,6 +5,8 @@ import { useState, useEffect, useRef } from 'react';
 import PagerView from 'react-native-pager-view';
 import axios from "axios";
 import { BACKEND_URL } from '@env'
+import { useRoute } from '@react-navigation/native';
+const BACKEND_URL_TEMP = "https://m6rm2v01-3000.asse.devtunnels.ms"
 const CircleRisk = ({ circleColor }) => {
     return (
         <TouchableOpacity style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
@@ -28,7 +30,7 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
     const handleClick = async (ingredientName: string) => {
         setLoading(true);
         try {
-            const response = await axios.get(`${BACKEND_URL}/api/v1/ingredients/1/AI?ingredient_name=${ingredientName}`);
+            const response = await axios.get(`${BACKEND_URL_TEMP}/api/v1/ingredients/1/AI?ingredient_name=${ingredientName}`);
             setIngredientInfo(response.data.response);
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -39,13 +41,13 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
     };
 
     let backgroundColor, textColor;
-    if (confidence >= 0 && confidence <= 0.3) {
+    if (confidence > 0.7 && confidence <= 1.0) {
         backgroundColor = '#FFCACA'; // Reddish background
         textColor = '#D3180C'; // Red text
     } else if (confidence > 0.3 && confidence <= 0.7) {
         backgroundColor = '#FFD7B3'; // Orange background
         textColor = '#A05E03'; // Orange text
-    } else if (confidence > 0.7 && confidence <= 0.9) {
+    } else if (confidence >= 0 && confidence <= 0.3) {
         backgroundColor = '#FFFBD7'; // Yellow background
         textColor = '#A05E03'; // Yellow text
     } else {
@@ -64,8 +66,6 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
         <TouchableOpacity onPress={() => { setModalVisible(true); handleClick(name) }}>
             <View style={[styles.ingredientBox, { backgroundColor }]}>
                 <Text style={{ color: textColor, fontWeight: '700' }}>{name}</Text>
-                <Text>Confidence Level: {confidence.toFixed(3)}</Text>
-
                 <Modal
                     animationType="slide"
                     transparent={true}
@@ -82,7 +82,7 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
                             (<View style={styles.modalView2}>
                                 <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingRight: 20 }}>
                                     <Text style={{ fontSize: 18, fontWeight: '700', marginBottom: 10 }}>{name}</Text>
-                                    <Text>Confidence Level: {confidence.toFixed(3)}</Text>
+                                    {/* <Text>Confidence Level: {confidence.toFixed(3)}</Text> */}
                                     <Text>{formattedText}</Text>
                                 </ScrollView>
                                 <TouchableOpacity onPress={() => setModalVisible(false)} style={{ backgroundColor: '#3E5B20', marginTop: 10, borderRadius: 5, paddingVertical: 5, paddingHorizontal: 8 }}>
@@ -130,6 +130,7 @@ const ReviewItem = ({ rating, description, negativeReaction, reviewerName }: Rev
 }
 
 const Analysis = () => {
+    
 
     const pagerRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(0);
@@ -141,13 +142,20 @@ const Analysis = () => {
     };
     const [reviews, setReviews] = useState<ReviewItemProps[]>([]);
     const [ingredients, setIngredients] = useState<IngredientItemProps[]>([])
+
+    // handle information taken from scan.tsx
+    const route = useRoute();
+    let {scanIngredients} = route.params;
+    scanIngredients = scanIngredients.filter((item) => item?.name !== "")
+    console.log("scanIngredients:", scanIngredients);
+
     useEffect(() => {
         fetchReviews();
-        fetchIngredients();
+        // fetchIngredients();
     }, []);
 
     const fetchIngredients = async () => {
-        const API_URL = `${BACKEND_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`
+        const API_URL = `${BACKEND_URL_TEMP}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`
         try {
             const response = await axios.get(API_URL);
             setIngredients(response.data?.output)
@@ -157,7 +165,7 @@ const Analysis = () => {
     }
 
     const fetchReviews = async () => {
-        const API_URL = `${BACKEND_URL}/api/v1/products/1/reviews`;
+        const API_URL = `${BACKEND_URL_TEMP}/api/v1/products/1/reviews`;
         try {
             const conditions = ["eczema", "acne"];
             const requestBody = { conditions };
@@ -182,16 +190,17 @@ const Analysis = () => {
     const negativeReactionsCount = reviews.filter(review => review?.negativeReaction).length;
     const percentageNegativeReactions = (negativeReactionsCount / reviews.length) * 100;
 
-    const sortedIngredients = ingredients.sort((a, b) => {
-        return a.confidence - b.confidence;
+    
+    let sortedIngredients = scanIngredients.sort((a, b) => {
+        return b.confidence - a.confidence;
     });
 
-    const counts = ingredients.reduce((acc, cur) => {
-        if (cur.confidence >= 0 && cur.confidence <= 0.3) {
+    const counts = sortedIngredients.reduce((acc, cur) => {
+        if (cur.confidence > 0.7 && cur.confidence <= 1.0) {
             acc.highRiskCount++;
         } else if (cur.confidence > 0.3 && cur.confidence <= 0.7) {
             acc.mediumRiskCount++;
-        } else if (cur.confidence > 0.7 && cur.confidence <= 0.9) {
+        } else if (cur.confidence >= 0 && cur.confidence <= 0.3) {
             acc.lowRiskCount++;
         }
         return acc;
@@ -376,7 +385,8 @@ const styles = StyleSheet.create({
     ingredientBox: {
         borderRadius: 15,
         padding: 20,
-        marginVertical: 10
+        marginVertical: 10,
+        width: 280
     },
     viewPager: {
         flex: 1,

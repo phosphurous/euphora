@@ -8,10 +8,13 @@ import { FileSystemUploadType, uploadAsync } from 'expo-file-system';
 import { Camera, CameraType } from 'expo-camera';
 import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 import { useNavigation } from '@react-navigation/native';
-
+import { BACKEND_URL } from '@env';
 import { Link } from 'expo-router';
+const BACKEND_URL_TEMP = "https://m6rm2v01-3000.asse.devtunnels.ms"
 
 export default function ScanScreen() {
+    const navigation = useNavigation();
+
     const [camera, setCamera] = useState<Camera | null>(null);
     const [image, setImage] = useState<string | null>(null);
     const [allergentLst, setAllergentLst] = useState<string[]>([]);
@@ -48,7 +51,7 @@ export default function ScanScreen() {
             );
     
             // Upload the image
-            const uploadResult = await uploadAsync('http://192.168.56.1:3000/ocr/img-to-text', manipResult.uri, {
+            const uploadResult = await uploadAsync(`${BACKEND_URL_TEMP}/ocr/img-to-text`, manipResult.uri, {
                 httpMethod: 'POST',
                 uploadType: FileSystemUploadType.MULTIPART,
                 fieldName: 'demo_image'
@@ -61,44 +64,9 @@ export default function ScanScreen() {
       }
   };
   
-    // const pickImage = async () => {
-
-        // const res2 = await fetch('http://192.168.56.1:3000/ocr/img-to-text')
-        // const {data} = await res2.json();
-        // console.log(data)
-
-
-        // from gallery
-        // No permissions request is necessary for launching the image library
-        // let result = await ImagePicker.launchImageLibraryAsync({
-        //     mediaTypes: ImagePicker.MediaTypeOptions.All,
-        //     allowsEditing: true,
-        //     // aspect: [4, 3],
-        //     quality: 1,
-        // });
-
-        // console.log(result);
-
-        // send image
-        // if (!result.canceled) {
-        //     setImage(result.assets[0].uri);
-        //     const uploadResult = await uploadAsync('http://192.168.56.1:3000/ocr/img-to-text', result.assets[0].uri, {
-        //         httpMethod: 'POST',
-        //         uploadType: FileSystemUploadType.MULTIPART,
-        //         fieldName: 'demo_image'
-        //     });
-        //     console.log(uploadResult)
-        // }
-    // };
-
     useEffect(() => {
         const sendImage = async () => {
             if(image){
-                // const uploadResult = await uploadAsync('http://192.168.56.1:3000/ocr/img-to-text', image, {
-                //     httpMethod: 'POST',
-                //     uploadType: FileSystemUploadType.MULTIPART,
-                //     fieldName: 'demo_image'
-                // });
 
                 // this is to compress the image because of file limit
                 const manipResult = await manipulateAsync(
@@ -106,7 +74,7 @@ export default function ScanScreen() {
                     { compress: 0.2, format: SaveFormat.JPEG }
                 );
                 
-                const apiURL = "http://13.229.232.103:3000/api/v1/ingredients/1/allergy-confidence"
+                const apiURL = `${BACKEND_URL_TEMP}/api/v1/ingredients/1/allergy-confidence`
 
                 // here is to upload to backend
                 const uploadResult = await uploadAsync(apiURL, manipResult.uri, {
@@ -117,9 +85,10 @@ export default function ScanScreen() {
 
                 if (uploadResult.status === 200) {
                   const jsonResponse = JSON.parse(uploadResult.body);
-                  console.log("confidence: " , jsonResponse);
+                  // console.log("confidence: " , jsonResponse);
                   setAllergentLst(jsonResponse);
-                  console.log("allergent list: " , allergentLst);
+                  // console.log("allergent list: " , allergentLst);
+                  navigation.navigate("ingredientsAnalysis", {scanIngredients: allergentLst});
                   // Handle the JSON response here, such as updating state or UI
                 } else {
                   console.error('Failed to upload image to API');
