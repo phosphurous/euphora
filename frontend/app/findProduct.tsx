@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native";
+import { StyleSheet, TouchableOpacity, Image, Dimensions, SafeAreaView, ScrollView } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
@@ -17,6 +17,7 @@ const FindProductScreen = () => {
   const [selectedOptions, setSelectedOptions] = useState([]); // To store selected options
   const [skinTypesConditions, setSkinTypesConditions] = useState([]); // To store product data
   const [isNextDisabled, setIsNextDisabled] = useState(true); // State variable to track if Next button should be disabled
+  const [filteredResults, setFilteredResults] = useState([]); // State variable to store filtered search results
 
   useEffect(() => {
     const getData = async () => {
@@ -35,14 +36,21 @@ const FindProductScreen = () => {
     setIsNextDisabled(selectedOptions.length === 0);
   }, [selectedOptions]);
 
+  useEffect(() => {
+    // Filter results based on search phrase
+    setFilteredResults(
+      skinTypesConditions.filter((product) =>
+        product.name.toLowerCase().includes(searchPhrase.toLowerCase())
+      )
+    );
+  }, [searchPhrase, skinTypesConditions]);
+
   const handleOptionClick = (option) => {
     setSelectedOptions([...selectedOptions, option]); // Add selected option to the list
   };
 
   const removeOption = (optionToRemove) => {
-    setSelectedOptions(
-      selectedOptions.filter((option) => option !== optionToRemove)
-    );
+    setSelectedOptions(selectedOptions.filter((option) => option !== optionToRemove));
   };
 
   // Function to wrap selected options into rows
@@ -98,12 +106,22 @@ const FindProductScreen = () => {
       />
       <View style={styles.selectedOptionsContainer}>{renderOptions()}</View>
       {clicked ? (
-        <List
-          searchPhrase={searchPhrase}
-          data={skinTypesConditions}
-          setClicked={setClicked}
-          onOptionClick={handleOptionClick}
-        />
+        <SafeAreaView style={styles.listContainer}>
+          <ScrollView>
+            {filteredResults.map((product) => (
+              <TouchableOpacity
+                key={product.product_id}
+                style={styles.productItem}
+                onPress={() => {
+                  handleOptionClick(product.name);
+                  setClicked(false);
+                }}
+              >
+                <Text style={styles.productName}>{product.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </SafeAreaView>
       ) : (
         <Text style={styles.body} onPress={() => navigation.navigate("skinQuiz1")}>
           I don't have any skin conditions or allergies.
@@ -119,32 +137,6 @@ const FindProductScreen = () => {
     </View>
   );
 };
-
-// Modify the List component to render the search results dynamically
-const List = ({ searchPhrase, data, setClicked, onOptionClick }) => {
-  const filteredResults = data.filter(product =>
-    product.name.toLowerCase().includes(searchPhrase.toLowerCase())
-  );
-
-  return (
-    <View style={styles.listContainer}>
-      {filteredResults.map(product => (
-        <TouchableOpacity
-          key={product.product_id}
-          style={styles.productItem}
-          onPress={() => {
-            onOptionClick(product.name);
-            setClicked(false);
-          }}
-        >
-          <Text>{product.name}</Text>
-        </TouchableOpacity>
-      ))}
-    </View>
-  );
-};
-
-export default FindProductScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -200,13 +192,18 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   listContainer: {
-    marginTop: 10,
-    width: "100%",
+    width: "80%",
+    maxHeight: "50%", // Adjust the max height as needed
   },
   productItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    paddingVertical: 20,
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
   },
+  productName: {
+    fontSize: 18,
+//     fontWeight: "bold",
+  },
 });
+
+export default FindProductScreen;
