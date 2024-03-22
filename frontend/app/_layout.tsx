@@ -77,6 +77,10 @@ function RootLayoutNav() {
           name="harmfulList"
           options={{ title: "Harmful Ingredients" }}
         />
+        <Stack.Screen
+          name="findProduct"
+          options={{ title: "Ingredient Checker" }}
+        />
       </Stack>
     </ThemeProvider>
   );

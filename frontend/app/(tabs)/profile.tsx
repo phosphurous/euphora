@@ -42,7 +42,8 @@ export default function ProfileScreen() {
       </View>
 
       <View style={styles.selectedOptionsRow}>
-        <TouchableOpacity style={styles.selectedOptionBubble}>
+        <TouchableOpacity style={styles.selectedOptionBubble}
+        onPress={() => navigation.navigate("findProduct")}>
           <Image source={require("@/assets/images/lock_icon.png")} />
           <Text style={styles.body}>Privacy and Settings</Text>
           <Image source={require("@/assets/images/rightarrow_icon.png")} />

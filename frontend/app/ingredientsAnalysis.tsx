@@ -543,7 +543,7 @@ const Analysis = () => {
                     description={item.description}
                     negativeReaction={item.negativeReaction}
                     reviewerName={item?.Profile?.Account.name}
-                    Profile={undefined}
+//                     Profile={undefined}
                   />
                 )}
                 // keyExtractor={(item) => item.review_id.toString()}
