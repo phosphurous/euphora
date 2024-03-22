@@ -33,7 +33,7 @@ export default function ProfileScreen() {
       <View style={styles.selectedOptionsRow}>
         <TouchableOpacity
           style={styles.selectedOptionBubble}
-          onPress={() => navigation.navigate("harmfulList")}
+//           onPress={() => navigation.navigate("harmfulList")}
         >
           <Image source={require("@/assets/images/pencil_icon.png")} />
           <Text style={styles.body}>Harmful Ingredients</Text>

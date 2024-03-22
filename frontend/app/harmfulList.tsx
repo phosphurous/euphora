@@ -25,33 +25,28 @@ export default function HarmfulListScreen() {
     <View style={styles.container}>
       <Accordion
         m="$5"
-        width="80%"
-        size="lg"
+        width="90%"
+        size="md"
         variant="unfilled"
         type="single"
-        borderWidth={1}
+        marginTop={10}
         isCollapsible={true}
         isDisabled={false}
-        style={styles.body}
       >
         <AccordionItem value="a">
-          <AccordionHeader
-            backgroundColor="white"
-            fontFamily="Inter-SemiBold"
-            fontSize={30}
-          >
+          <AccordionHeader>
             <AccordionTrigger>
               {({ isExpanded }) => {
                 return (
                   <>
-                    <AccordionTitleText>
+                    <AccordionTitleText
+                      sx={{
+                        fontFamily: "Inter-SemiBold",
+                        fontSize: 24,
+                      }}
+                    >
                       How do I place an order?
                     </AccordionTitleText>
-                    {isExpanded ? (
-                  <AccordionIcon as={ChevronUpIcon} />
-                ) : (
-                  <AccordionIcon as={ChevronDownIcon} />
-                )}
                   </>
                 );
               }}
@@ -66,13 +61,17 @@ export default function HarmfulListScreen() {
           </AccordionContent>
         </AccordionItem>
         <AccordionItem value="b">
-
           <AccordionHeader>
             <AccordionTrigger>
               {({ isExpanded }) => {
                 return (
                   <>
-                    <AccordionTitleText>
+                    <AccordionTitleText
+                      sx={{
+                        fontFamily: "Inter-SemiBold",
+                        fontSize: 24,
+                      }}
+                    >
                       What payment methods do you accept?
                     </AccordionTitleText>
                   </>
@@ -82,12 +81,16 @@ export default function HarmfulListScreen() {
           </AccordionHeader>
 
           <AccordionContent pb="$0">
-            <AccordionContentText>
+            <AccordionContentText
+              sx={{
+                fontFamily: "Inter-Regular",
+                fontSize: 18,
+                marginTop: 5,
+              }}
+            >
               Text 1
             </AccordionContentText>
-            <AccordionContentText>
-              Text 2
-            </AccordionContentText>
+            <AccordionContentText>Text 2</AccordionContentText>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    //     justifyContent: "center",
   },
   selectedOptionsRow: {
     flexDirection: "row",
