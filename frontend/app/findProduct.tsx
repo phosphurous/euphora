@@ -3,9 +3,7 @@ import { StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
-import List from "@/components/List";
 import axios from "axios";
-import { Link } from "expo-router";
 import { BACKEND_URL } from "@env";
 
 const API_URL = `${BACKEND_URL}/api/v1/products/search?q=`;
@@ -17,15 +15,14 @@ const FindProductScreen = () => {
   const [searchPhrase, setSearchPhrase] = useState("");
   const [clicked, setClicked] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]); // To store selected options
-  const [skinTypesConditions, setSkinTypesConditions] = useState(null);
+  const [skinTypesConditions, setSkinTypesConditions] = useState([]); // To store product data
   const [isNextDisabled, setIsNextDisabled] = useState(true); // State variable to track if Next button should be disabled
-  const [searchResults, setSearchResults] = useState([]); // State variable to store search results
 
   useEffect(() => {
     const getData = async () => {
       try {
         const response = await axios.get(API_URL + searchPhrase); // Include search phrase in API call
-        console.log(response.data);
+        setSkinTypesConditions(response.data);
       } catch (error) {
         // Handle error
       }
@@ -123,6 +120,30 @@ const FindProductScreen = () => {
   );
 };
 
+// Modify the List component to render the search results dynamically
+const List = ({ searchPhrase, data, setClicked, onOptionClick }) => {
+  const filteredResults = data.filter(product =>
+    product.name.toLowerCase().includes(searchPhrase.toLowerCase())
+  );
+
+  return (
+    <View style={styles.listContainer}>
+      {filteredResults.map(product => (
+        <TouchableOpacity
+          key={product.product_id}
+          style={styles.productItem}
+          onPress={() => {
+            onOptionClick(product.name);
+            setClicked(false);
+          }}
+        >
+          <Text>{product.name}</Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+
 export default FindProductScreen;
 
 const styles = StyleSheet.create({
@@ -177,5 +198,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 10,
     marginTop: 30,
+  },
+  listContainer: {
+    marginTop: 10,
+    width: "100%",
+  },
+  productItem: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
   },
 });
