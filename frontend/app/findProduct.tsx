@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableOpacity, Image, Dimensions, SafeAreaView, ScrollView } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
@@ -40,17 +47,23 @@ const FindProductScreen = () => {
     // Filter results based on search phrase
     setFilteredResults(
       skinTypesConditions.filter((product) =>
-        product.name.toLowerCase().includes(searchPhrase.toLowerCase())
-      )
+        product.name.toLowerCase().includes(searchPhrase.toLowerCase()),
+      ),
     );
   }, [searchPhrase, skinTypesConditions]);
 
   const handleOptionClick = (option) => {
-    setSelectedOptions([...selectedOptions, option]); // Add selected option to the list
-  };
-
-  const removeOption = (optionToRemove) => {
-    setSelectedOptions(selectedOptions.filter((option) => option !== optionToRemove));
+    // Check if the option is already selected
+    if (selectedOptions.includes(option)) {
+      // If already selected, replace it with the new option
+      const updatedOptions = selectedOptions.map((selectedOption) =>
+        selectedOption === option ? option : selectedOption,
+      );
+      setSelectedOptions(updatedOptions);
+    } else {
+      // If not selected, add the new option
+      setSelectedOptions([option]);
+    }
   };
 
   // Function to wrap selected options into rows
@@ -78,16 +91,8 @@ const FindProductScreen = () => {
     return rows.map((row, rowIndex) => (
       <View key={rowIndex} style={styles.selectedOptionsRow}>
         {row.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.selectedOptionBubble}
-            onPress={() => removeOption(option)}
-          >
-            <Text>{option}</Text>
-            <Image
-              source={require("@/assets/images/x_icon.png")}
-              style={styles.xIcon}
-            />
+          <TouchableOpacity key={index} style={styles.selectedOptionBubble}>
+            <Text style={styles.optionBubbleText}>{option}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -96,7 +101,15 @@ const FindProductScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Search for your product</Text>
+      <View
+        style={{
+          width: "80%", // Set width to 90% of screen width
+          alignItems: "flex-start", // Align children to the start of the container
+          alignSelf: "center",
+        }}
+      >
+        <Text style={styles.title}>Search for your product</Text>
+      </View>
 
       <SearchBar
         searchPhrase={searchPhrase}
@@ -123,8 +136,12 @@ const FindProductScreen = () => {
           </ScrollView>
         </SafeAreaView>
       ) : (
-        <Text style={styles.body} onPress={() => navigation.navigate("skinQuiz1")}>
-          I don't have any skin conditions or allergies.
+        <Text
+          style={styles.body}
+          onPress={() => navigation.navigate("skinQuiz1")}
+        >
+          Couldn't find your product? Scan the ingredients of your product
+          instead.
         </Text>
       )}
       <TouchableOpacity
@@ -148,11 +165,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontSize: 20,
     fontFamily: "Inter-SemiBold",
-    textAlign: "left",
   },
   body: {
-    fontSize: 14,
-    color: "#A6A2A2",
+    fontSize: 18,
+    fontFamily: "Inter-Regular",
     textAlign: "center",
     position: "absolute",
     bottom: 100,
@@ -178,11 +194,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     margin: 5,
+    fontSize: 16,
+    maxWidth: "90%",
   },
-  xIcon: {
-    width: 12,
-    height: 12,
-    marginLeft: 5,
+  optionBubbleText: {
+    fontSize: 18,
+    fontFamily: "Inter-Medium",
   },
   nextButton: {
     backgroundColor: "#D1E543",
@@ -193,7 +210,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     width: "80%",
-    maxHeight: "50%", // Adjust the max height as needed
+    maxHeight: "50%",
   },
   productItem: {
     paddingVertical: 20,
@@ -202,7 +219,6 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 18,
-//     fontWeight: "bold",
   },
 });
 
