@@ -1,6 +1,5 @@
-import { StyleSheet, Button, Image, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, Button, Image, TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -10,15 +9,21 @@ import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 import { useNavigation } from '@react-navigation/native';
 import { BACKEND_URL } from '@env';
 import { Link } from 'expo-router';
-const BACKEND_URL_TEMP = "https://m6rm2v01-3000.asse.devtunnels.ms"
 
 export default function ScanScreen() {
     const navigation = useNavigation();
-
+    //const BACKEND_URL_TEMP = "http://47.128.233.124:3000"
     const [camera, setCamera] = useState<Camera | null>(null);
     const [image, setImage] = useState<string | null>(null);
     const [allergentLst, setAllergentLst] = useState<string[]>([]);
     const [isCameraReady, setIsCameraReady] = useState(false);
+    const [loading, setLoading] = useState(false);
+
+    const displayLoadingIndicator = () => (
+      <View style={styles.loadingModal}>
+          <Text style={{marginVertical: 30}}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+      </View>
+  );
 
     const pickImage = async () => {
       // Check for library permissions
@@ -51,7 +56,7 @@ export default function ScanScreen() {
             );
     
             // Upload the image
-            const uploadResult = await uploadAsync(`${BACKEND_URL_TEMP}/ocr/img-to-text`, manipResult.uri, {
+            const uploadResult = await uploadAsync(`http://47.128.233.124:3000/ocr/img-to-text`, manipResult.uri, {
                 httpMethod: 'POST',
                 uploadType: FileSystemUploadType.MULTIPART,
                 fieldName: 'demo_image'
@@ -67,14 +72,14 @@ export default function ScanScreen() {
     useEffect(() => {
         const sendImage = async () => {
             if(image){
-
+                setLoading(true);
                 // this is to compress the image because of file limit
                 const manipResult = await manipulateAsync(
                     image, [],
                     { compress: 0.2, format: SaveFormat.JPEG }
                 );
                 
-                const apiURL = `${BACKEND_URL_TEMP}/api/v1/ingredients/1/allergy-confidence`
+                const apiURL = `http://47.128.233.124:3000/api/v1/ingredients/1/allergy-confidence`
 
                 // here is to upload to backend
                 const uploadResult = await uploadAsync(apiURL, manipResult.uri, {
@@ -86,13 +91,16 @@ export default function ScanScreen() {
                 if (uploadResult.status === 200) {
                   const jsonResponse = JSON.parse(uploadResult.body);
                   // console.log("confidence: " , jsonResponse);
+                  console.log("list: " , jsonResponse);
                   setAllergentLst(jsonResponse);
+                  console.log("allergent list: " , allergentLst);
                   // console.log("allergent list: " , allergentLst);
-                  navigation.navigate("ingredientsAnalysis", {scanIngredients: allergentLst});
+                  navigation.navigate("ingredientsAnalysis", {scanIngredients: jsonResponse});
                   // Handle the JSON response here, such as updating state or UI
                 } else {
                   console.error('Failed to upload image to API');
                 }
+                setLoading(false);
             }
         } 
         sendImage()
@@ -115,6 +123,7 @@ export default function ScanScreen() {
   return (
     <View style={styles.container}>
         {/* <View style={{ flex: 1}}> */}
+            {loading && displayLoadingIndicator()}
             <View style={cameraStyles.cameraContainer}>
                 <Camera 
                 ref={ref => setCamera(ref)}
@@ -210,6 +219,16 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
+  },
+  loadingModal: {
+    backgroundColor: '#E9F4E4',
+    height: 200,
+    width: 200,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent:'center'
   },
 });
 
