@@ -1,52 +1,69 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, TouchableOpacity, Image, Dimensions } from "react-native"; // Import Dimensions
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Text, View } from "@/components/Themed";
 import SearchBar from "@/components/SearchBar";
-import List from "@/components/List";
 import axios from "axios";
-import { Link } from "expo-router";
 import { BACKEND_URL } from "@env";
 
-const API_URL = `${BACKEND_URL}/api/v1/profile/get_skin_types_cond`;
+const API_URL = `${BACKEND_URL}/api/v1/products/search?q=`;
 
-const SpecifyConditionScreen = () => {
+const FindProductScreen = () => {
   const navigation = useNavigation();
   const windowWidth = Dimensions.get("window").width; // Get window width
 
   const [searchPhrase, setSearchPhrase] = useState("");
   const [clicked, setClicked] = useState(false);
   const [selectedOptions, setSelectedOptions] = useState([]); // To store selected options
-  const [skinTypesConditions, setSkinTypesConditions] = useState(null);
+  const [skinTypesConditions, setSkinTypesConditions] = useState([]); // To store product data
   const [isNextDisabled, setIsNextDisabled] = useState(true); // State variable to track if Next button should be disabled
+  const [filteredResults, setFilteredResults] = useState([]); // State variable to store filtered search results
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const response = await axios.get(API_URL);
-        setSkinTypesConditions(
-          response.data.skin_types_conditions.skin_conditions_option,
-        );
+        const response = await axios.get(API_URL + searchPhrase); // Include search phrase in API call
+        setSkinTypesConditions(response.data);
       } catch (error) {
         // Handle error
       }
     };
     getData();
-  }, []);
+  }, [searchPhrase]); // Fetch data whenever search phrase changes
 
   useEffect(() => {
     // Update isNextDisabled based on selectedOptions
     setIsNextDisabled(selectedOptions.length === 0);
   }, [selectedOptions]);
 
-  const handleOptionClick = (option) => {
-    setSelectedOptions([...selectedOptions, option]); // Add selected option to the list
-  };
-
-  const removeOption = (optionToRemove) => {
-    setSelectedOptions(
-      selectedOptions.filter((option) => option !== optionToRemove),
+  useEffect(() => {
+    // Filter results based on search phrase
+    setFilteredResults(
+      skinTypesConditions.filter((product) =>
+        product.name.toLowerCase().includes(searchPhrase.toLowerCase()),
+      ),
     );
+  }, [searchPhrase, skinTypesConditions]);
+
+  const handleOptionClick = (option) => {
+    // Check if the option is already selected
+    if (selectedOptions.includes(option)) {
+      // If already selected, replace it with the new option
+      const updatedOptions = selectedOptions.map((selectedOption) =>
+        selectedOption === option ? option : selectedOption,
+      );
+      setSelectedOptions(updatedOptions);
+    } else {
+      // If not selected, add the new option
+      setSelectedOptions([option]);
+    }
   };
 
   // Function to wrap selected options into rows
@@ -74,16 +91,8 @@ const SpecifyConditionScreen = () => {
     return rows.map((row, rowIndex) => (
       <View key={rowIndex} style={styles.selectedOptionsRow}>
         {row.map((option, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.selectedOptionBubble}
-            onPress={() => removeOption(option)}
-          >
-            <Text>{option}</Text>
-            <Image
-              source={require("@/assets/images/x_icon.png")}
-              style={styles.xIcon}
-            />
+          <TouchableOpacity key={index} style={styles.selectedOptionBubble}>
+            <Text style={styles.optionBubbleText}>{option}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -92,18 +101,15 @@ const SpecifyConditionScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text
+      <View
         style={{
-          fontFamily: "PlayfairDisplay-SemiBold",
-          fontSize: 35,
-          marginTop: 40,
+          width: "80%", // Set width to 90% of screen width
+          alignItems: "flex-start", // Align children to the start of the container
+          alignSelf: "center",
         }}
       >
-        Hi Anna,
-      </Text>
-      <Text style={styles.title}>
-        Tell us about your skin conditions and allergies.
-      </Text>
+        <Text style={styles.title}>Search for your product</Text>
+      </View>
 
       <SearchBar
         searchPhrase={searchPhrase}
@@ -113,18 +119,29 @@ const SpecifyConditionScreen = () => {
       />
       <View style={styles.selectedOptionsContainer}>{renderOptions()}</View>
       {clicked ? (
-        <List
-          searchPhrase={searchPhrase}
-          data={skinTypesConditions}
-          setClicked={setClicked}
-          onOptionClick={handleOptionClick}
-        />
+        <SafeAreaView style={styles.listContainer}>
+          <ScrollView>
+            {filteredResults.map((product) => (
+              <TouchableOpacity
+                key={product.product_id}
+                style={styles.productItem}
+                onPress={() => {
+                  handleOptionClick(product.name);
+                  setClicked(false);
+                }}
+              >
+                <Text style={styles.productName}>{product.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </SafeAreaView>
       ) : (
         <Text
           style={styles.body}
           onPress={() => navigation.navigate("skinQuiz1")}
         >
-          I don't have any skin conditions or allergies.
+          Couldn't find your product? Scan the ingredients of your product
+          instead.
         </Text>
       )}
       <TouchableOpacity
@@ -138,22 +155,20 @@ const SpecifyConditionScreen = () => {
   );
 };
 
-export default SpecifyConditionScreen;
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
   },
   title: {
-    marginTop: 10,
+    marginTop: 30,
     marginBottom: 10,
     fontSize: 20,
-    textAlign: "center",
+    fontFamily: "Inter-SemiBold",
   },
   body: {
-    fontSize: 14,
-    color: "#A6A2A2",
+    fontSize: 18,
+    fontFamily: "Inter-Regular",
     textAlign: "center",
     position: "absolute",
     bottom: 100,
@@ -179,11 +194,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 6,
     margin: 5,
+    fontSize: 16,
+    maxWidth: "90%",
   },
-  xIcon: {
-    width: 12,
-    height: 12,
-    marginLeft: 5,
+  optionBubbleText: {
+    fontSize: 18,
+    fontFamily: "Inter-Medium",
   },
   nextButton: {
     backgroundColor: "#D1E543",
@@ -192,4 +208,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 30,
   },
+  listContainer: {
+    width: "80%",
+    maxHeight: "50%",
+  },
+  productItem: {
+    paddingVertical: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  productName: {
+    fontSize: 18,
+  },
 });
+
+export default FindProductScreen;
