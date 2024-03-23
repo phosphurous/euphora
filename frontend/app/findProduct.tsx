@@ -128,6 +128,7 @@ const FindProductScreen = () => {
                 onPress={() => {
                   handleOptionClick(product.name);
                   setClicked(false);
+                  navigation.navigate("ingredientsAnalysisSearch", { productID: product.product_id, productName: product.name });
                 }}
               >
                 <Text style={styles.productName}>{product.name}</Text>
@@ -138,7 +139,7 @@ const FindProductScreen = () => {
       ) : (
         <Text
           style={styles.body}
-          onPress={() => navigation.navigate("skinQuiz1")}
+          onPress={() => navigation.navigate("scan")}
         >
           Couldn't find your product? Scan the ingredients of your product
           instead.
@@ -146,7 +147,7 @@ const FindProductScreen = () => {
       )}
       <TouchableOpacity
         style={[styles.nextButton, { opacity: isNextDisabled ? 0.5 : 1 }]}
-        onPress={() => navigation.navigate("skinQuiz1")}
+        onPress={() => {navigation.navigate("ingredientsAnalysisSearch", { productName: selectedOptions })}}
         disabled={isNextDisabled}
       >
         <Text style={{ color: "black" }}>Next</Text>
