@@ -106,7 +106,7 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
                     <View style={styles.modalView1}>
                         {loading ? (
                             <View style={styles.loadingModal}>
-                                <Text style={{ marginVertical: 30 }}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+                                <Text style={{ marginVertical: 30, fontSize:18 }}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
                             </View>) :
                             (<View style={styles.modalView2}>
                                 <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingRight: 20 }}>

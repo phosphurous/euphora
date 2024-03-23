@@ -1,4 +1,4 @@
-import { StyleSheet, Button, Image, TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Button, Image, TouchableOpacity, Text, View, ActivityIndicator, Modal } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
 import { useEffect, useState } from 'react';
 
@@ -11,18 +11,33 @@ import { BACKEND_URL } from '@env';
 import { Link } from 'expo-router';
 
 export default function ScanScreen() {
-    const navigation = useNavigation();
+  const navigation = useNavigation();
 
-    const [camera, setCamera] = useState<Camera | null>(null);
-    const [image, setImage] = useState<string | null>(null);
-    const [allergentLst, setAllergentLst] = useState<string[]>([]);
-    const [isCameraReady, setIsCameraReady] = useState(false);
-    const [loading, setLoading] = useState(false);
+  const [camera, setCamera] = useState<Camera | null>(null);
+  const [image, setImage] = useState<string | null>(null);
+  const [allergentLst, setAllergentLst] = useState<string[]>([]);
+  const [isCameraReady, setIsCameraReady] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-    const displayLoadingIndicator = () => (
-      <View style={styles.loadingModal}>
-          <Text style={{marginVertical: 30}}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+  const displayLoadingIndicator = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={loading}
+    >
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      }}>
+        <View style={styles.loadingModal}>
+          <Text style={{ marginVertical: 30, fontSize:18 }}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+        </View>
       </View>
+    </Modal>
+
+
   );
   const pickImage = async () => {
     // Check for library permissions
@@ -91,12 +106,11 @@ export default function ScanScreen() {
           const jsonResponse = JSON.parse(uploadResult.body);
           // console.log("confidence: " , jsonResponse);
           setAllergentLst(jsonResponse);
-          console.log("allergent list: " , allergentLst.length);
-          if(allergentLst.length > 0){
+          console.log("allergent list: ", allergentLst.length);
+          if (allergentLst.length > 0) {
             navigation.navigate("ingredientsAnalysisScan", { scanIngredients: allergentLst });
           }
           // setAllergentLst([]);
-          // Handle the JSON response here, such as updating state or UI
         } else {
           console.error('Failed to upload image to API');
         }
@@ -122,27 +136,27 @@ export default function ScanScreen() {
 
   return (
     <View style={styles.container}>
-        {/* <View style={{ flex: 1}}> */}
-            {loading && displayLoadingIndicator()}
-            <View style={cameraStyles.cameraContainer}>
-                <Camera 
-                ref={ref => setCamera(ref)}
-                style={cameraStyles.fixedRatio} 
-                type={CameraType.back}
-                ratio={'16:9'} 
-                onCameraReady={() => setIsCameraReady(true)}/>
-            </View>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.circularButton} onPress={()=>takePicture()}>
-                <Text style={styles.buttonText}></Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.uploadButton} onPress={()=>pickImage()}>
-                <Image 
-                  source={require("@/assets/images/image.png")} // Adjust the path to your image accordingly
-                  style={styles.uploadButtonImage}
-                />
-              </TouchableOpacity>
-            </View>
+      {/* <View style={{ flex: 1}}> */}
+      {loading && displayLoadingIndicator()}
+      <View style={cameraStyles.cameraContainer}>
+        <Camera
+          ref={ref => setCamera(ref)}
+          style={cameraStyles.fixedRatio}
+          type={CameraType.back}
+          ratio={'16:9'}
+          onCameraReady={() => setIsCameraReady(true)} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.circularButton} onPress={() => takePicture()}>
+          <Text style={styles.buttonText}></Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage()}>
+          <Image
+            source={require("@/assets/images/image.png")} // Adjust the path to your image accordingly
+            style={styles.uploadButtonImage}
+          />
+        </TouchableOpacity>
+      </View>
 
 
 
@@ -158,9 +172,9 @@ export default function ScanScreen() {
         marginTop: 30,
         marginBottom: 20
       }}
-      onPress={() => navigation.navigate("findProduct")}
+        onPress={() => navigation.navigate("findProduct")}
       >
-          <Text>Search for product instead</Text>
+        <Text>Search for product instead</Text>
       </TouchableOpacity>
     </View>
   );
@@ -231,7 +245,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-    justifyContent:'center'
+    justifyContent: 'center'
   },
 });
 
