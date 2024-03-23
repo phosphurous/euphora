@@ -10,7 +10,6 @@ import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 import { useNavigation } from '@react-navigation/native';
 import { BACKEND_URL } from '@env';
 import { Link } from 'expo-router';
-const BACKEND_URL_TEMP = "https://m6rm2v01-3000.asse.devtunnels.ms"
 
 export default function ScanScreen() {
     const navigation = useNavigation();
@@ -51,7 +50,7 @@ export default function ScanScreen() {
             );
     
             // Upload the image
-            const uploadResult = await uploadAsync(`${BACKEND_URL_TEMP}/ocr/img-to-text`, manipResult.uri, {
+            const uploadResult = await uploadAsync(`${BACKEND_URL}/ocr/img-to-text`, manipResult.uri, {
                 httpMethod: 'POST',
                 uploadType: FileSystemUploadType.MULTIPART,
                 fieldName: 'demo_image'
@@ -74,7 +73,7 @@ export default function ScanScreen() {
                     { compress: 0.2, format: SaveFormat.JPEG }
                 );
                 
-                const apiURL = `${BACKEND_URL_TEMP}/api/v1/ingredients/1/allergy-confidence`
+                const apiURL = `${BACKEND_URL}/api/v1/ingredients/1/allergy-confidence`
 
                 // here is to upload to backend
                 const uploadResult = await uploadAsync(apiURL, manipResult.uri, {

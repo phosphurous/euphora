@@ -19,7 +19,6 @@ const SpecifyConditionScreen = () => {
   const [selectedOptions, setSelectedOptions] = useState([]); // To store selected options
   const [skinTypesConditions, setSkinTypesConditions] = useState(null);
   const [isNextDisabled, setIsNextDisabled] = useState(true); // State variable to track if Next button should be disabled
-
   useEffect(() => {
     const getData = async () => {
       try {
@@ -90,6 +89,24 @@ const SpecifyConditionScreen = () => {
     ));
   };
 
+  //update profile to backend
+  const handleClick = async () => {
+    try {
+      const data = {
+        "profile_id": 1,
+        "skin_cond": selectedOptions,
+        "skin_type": "COMBINATION"
+      };
+
+      const response = await axios.put(
+        `${BACKEND_URL}/api/v1/profile/update`,data
+      );
+      console.log("Response data:", response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text
@@ -122,14 +139,14 @@ const SpecifyConditionScreen = () => {
       ) : (
         <Text
           style={styles.body}
-          onPress={() => navigation.navigate("skinQuiz1")}
+          onPress={() => {navigation.navigate("skinQuiz1"); handleClick()}}
         >
           I don't have any skin conditions or allergies.
         </Text>
       )}
       <TouchableOpacity
         style={[styles.nextButton, { opacity: isNextDisabled ? 0.5 : 1 }]}
-        onPress={() => navigation.navigate("skinQuiz1")}
+        onPress={() => {navigation.navigate("skinQuiz1"); handleClick()}}
         disabled={isNextDisabled}
       >
         <Text style={{ color: "black" }}>Next</Text>

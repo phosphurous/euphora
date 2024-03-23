@@ -1,12 +1,12 @@
 import {
-  Text,
-  StyleSheet,
-  Image,
-  FlatList,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-  ActivityIndicator,
+    Text,
+    StyleSheet,
+    Image,
+    FlatList,
+    TouchableOpacity,
+    Modal,
+    ScrollView,
+    ActivityIndicator,
 } from "react-native";
 import React from "react";
 import { View } from "@/components/Themed";
@@ -14,58 +14,59 @@ import { useState, useEffect, useRef } from "react";
 import PagerView from "react-native-pager-view";
 import axios from "axios";
 import { BACKEND_URL } from "@env";
+import { useRoute } from '@react-navigation/native';
 const CircleRisk = ({ circleColor }) => {
-  return (
-    <TouchableOpacity
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <View style={styles.checkboxContainer}>
-        <View
-          style={{
-            width: 16,
-            height: 16,
-            borderRadius: 10,
-            borderWidth: 1,
-            borderColor: "#FFFFFF",
-            alignItems: "center",
-            justifyContent: "center",
-            backgroundColor: circleColor,
-            marginHorizontal: 2,
-          }}
-        ></View>
-      </View>
-    </TouchableOpacity>
-  );
+    return (
+        <TouchableOpacity
+            style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+            }}
+        >
+            <View style={styles.checkboxContainer}>
+                <View
+                    style={{
+                        width: 16,
+                        height: 16,
+                        borderRadius: 10,
+                        borderWidth: 1,
+                        borderColor: "#FFFFFF",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        backgroundColor: circleColor,
+                        marginHorizontal: 2,
+                    }}
+                ></View>
+            </View>
+        </TouchableOpacity>
+    );
 };
 
 type IngredientItemProps = {
-  name: string;
-  confidence: number;
+    name: string;
+    confidence: number;
 };
 
 const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
-  const [ingredientInfo, setIngredientInfo] = useState<string | null>(null);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [loading, setLoading] = useState<boolean>(false);
+    const [ingredientInfo, setIngredientInfo] = useState<string | null>(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
 
-  const handleClick = async (ingredientName: string) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(
-        `${BACKEND_URL}/api/v1/ingredients/1/AI?ingredient_name=${ingredientName}`,
-      );
-      setIngredientInfo(response.data.response);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setIngredientInfo("Error fetching ingredient info");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleClick = async (ingredientName: string) => {
+        setLoading(true);
+        try {
+            const response = await axios.get(
+                `${BACKEND_URL}/api/v1/ingredients/1/AI?ingredient_name=${ingredientName}`,
+            );
+            setIngredientInfo(response.data.response);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            setIngredientInfo("Error fetching ingredient info");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     let backgroundColor, textColor;
     if (confidence > 0.7 && confidence <= 1.0) {
@@ -104,7 +105,7 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
                     <View style={styles.modalView1}>
                         {loading ? (
                             <View style={styles.loadingModal}>
-                                <Text style={{marginVertical: 30}}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+                                <Text style={{ marginVertical: 30 }}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
                             </View>) :
                             (<View style={styles.modalView2}>
                                 <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingRight: 20 }}>
@@ -126,50 +127,50 @@ const IngredientItem = ({ name, confidence }: IngredientItemProps) => {
 }
 
 type ReviewItemProps = {
-  Profile: any;
-  negativeReaction: boolean;
-  rating: number;
-  description: string;
-  reviewerName: string;
+    Profile: any;
+    negativeReaction: boolean;
+    rating: number;
+    description: string;
+    reviewerName: string;
 };
 const ReviewItem = ({
-  rating,
-  description,
-  negativeReaction,
-  reviewerName,
+    rating,
+    description,
+    negativeReaction,
+    reviewerName,
 }: ReviewItemProps) => {
-  const getStarImage = (rating: number) => {
-    switch (rating) {
-      case 1:
-        return require("../assets/images/1stars.png");
-      case 2:
-        return require("../assets/images/2stars.png");
-      case 3:
-        return require("../assets/images/3stars.png");
-      case 4:
-        return require("../assets/images/4stars.png");
-      case 5:
-        return require("../assets/images/5stars.png");
-      default:
-        return require("../assets/images/5stars.png"); // Default to 5 stars
-    }
-  };
-  return (
-    <View style={styles.review}>
-      <Text style={{ fontWeight: "700" }}>{reviewerName}</Text>
-      <Image source={getStarImage(rating)}></Image>
-      <Text style={{ color: "grey", marginBottom: 2 }}>
-        {negativeReaction == true
-          ? "Experienced a negative reaction"
-          : "Did not experience any negative reactions"}
-      </Text>
-      <Text>{description}</Text>
-    </View>
-  );
+    const getStarImage = (rating: number) => {
+        switch (rating) {
+            case 1:
+                return require("../assets/images/1stars.png");
+            case 2:
+                return require("../assets/images/2stars.png");
+            case 3:
+                return require("../assets/images/3stars.png");
+            case 4:
+                return require("../assets/images/4stars.png");
+            case 5:
+                return require("../assets/images/5stars.png");
+            default:
+                return require("../assets/images/5stars.png"); // Default to 5 stars
+        }
+    };
+    return (
+        <View style={styles.review}>
+            <Text style={{ fontWeight: "700" }}>{reviewerName}</Text>
+            <Image source={getStarImage(rating)}></Image>
+            <Text style={{ color: "grey", marginBottom: 2 }}>
+                {negativeReaction == true
+                    ? "Experienced a negative reaction"
+                    : "Did not experience any negative reactions"}
+            </Text>
+            <Text>{description}</Text>
+        </View>
+    );
 };
 
 const Analysis = () => {
-    
+
 
     const pagerRef = useRef(null);
     const [currentPage, setCurrentPage] = useState(0);
@@ -181,61 +182,73 @@ const Analysis = () => {
     };
     const [reviews, setReviews] = useState<ReviewItemProps[]>([]);
     const [ingredients, setIngredients] = useState<IngredientItemProps[]>([])
+    const [conditions, setConditions] = useState([]);
 
     // handle information taken from scan.tsx
     const route = useRoute();
-    let {scanIngredients} = route.params;
+    let { scanIngredients } = route.params;
     scanIngredients = scanIngredients.filter((item) => item?.name !== "")
     console.log("scanIngredients:", scanIngredients);
 
     useEffect(() => {
         fetchReviews();
+        fetchConditions();
         // fetchIngredients();
     }, []);
 
-  const fetchIngredients = async () => {
-    const API_URL = `${BACKEND_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`;
-    try {
-      const response = await axios.get(API_URL);
-      setIngredients(response.data?.output);
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    const fetchConditions = async() => {
+        const API_URL = `${BACKEND_URL}/api/v1/profile/1/get_profile`;
+        try{
+            const response = await axios.get(API_URL);
+            // console.log("response:", response.data.condition);
+            setConditions(response.data.condition)
+        }catch(error){
+            console.error("Error fetching data:", error);
+        }
     }
-  };
 
-  const fetchReviews = async () => {
-    const API_URL = `${BACKEND_URL}/api/v1/products/1/reviews`;
-    try {
-      const conditions = ["eczema", "acne"];
-      const requestBody = { conditions };
-      const response = await axios.post(API_URL, requestBody);
-      setReviews(response.data?.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-  // Calculate number of ratings with 1, 2, 3, 4, 5 stars
-  const ratingsCount: number[] = reviews.reduce(
-    (acc, review) => {
-      const { rating } = review;
-      acc[rating - 1] += 1;
-      return acc;
-    },
-    [0, 0, 0, 0, 0],
-  );
+    const fetchIngredients = async () => {
+        const API_URL = `${BACKEND_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`;
+        try {
+            const response = await axios.get(API_URL);
+            setIngredients(response.data?.output);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
 
-  // Calculate mean rating out of 5
-  const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
-  const meanRating = totalRating / reviews.length;
+    const fetchReviews = async () => {
+        const API_URL = `${BACKEND_URL}/api/v1/products/1/reviews`;
+        try {
+            const requestBody = { conditions };
+            const response = await axios.post(API_URL, requestBody);
+            setReviews(response.data?.data);
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+    // Calculate number of ratings with 1, 2, 3, 4, 5 stars
+    const ratingsCount: number[] = reviews.reduce(
+        (acc, review) => {
+            const { rating } = review;
+            acc[rating - 1] += 1;
+            return acc;
+        },
+        [0, 0, 0, 0, 0],
+    );
 
-  // Calculate percentage of reviews with negative reactions
-  const negativeReactionsCount = reviews.filter(
-    (review) => review?.negativeReaction,
-  ).length;
-  const percentageNegativeReactions =
-    (negativeReactionsCount / reviews.length) * 100;
+    // Calculate mean rating out of 5
+    const totalRating = reviews.reduce((acc, review) => acc + review.rating, 0);
+    const meanRating = totalRating / reviews.length;
 
-    
+    // Calculate percentage of reviews with negative reactions
+    const negativeReactionsCount = reviews.filter(
+        (review) => review?.negativeReaction,
+    ).length;
+    const percentageNegativeReactions =
+        (negativeReactionsCount / reviews.length) * 100;
+
+
     let sortedIngredients = scanIngredients.sort((a, b) => {
         return b.confidence - a.confidence;
     });
@@ -362,26 +375,26 @@ const Analysis = () => {
                                 </View>
                             </View>
 
-              <Text style={{ fontSize: 18, paddingVertical: 5 }}>Reviews</Text>
-              <FlatList
-                data={reviews}
-                renderItem={({ item }) => (
-                  <ReviewItem
-                    rating={item.rating}
-                    description={item.description}
-                    negativeReaction={item.negativeReaction}
-                    reviewerName={item?.Profile?.Account.name}
-                    //                     Profile={undefined}
-                  />
-                )}
-                // keyExtractor={(item) => item.review_id.toString()}
-              />
-            </View>
-          </View>
+                            <Text style={{ fontSize: 18, paddingVertical: 5 }}>Reviews</Text>
+                            <FlatList
+                                data={reviews}
+                                renderItem={({ item }) => (
+                                    <ReviewItem
+                                        rating={item.rating}
+                                        description={item.description}
+                                        negativeReaction={item.negativeReaction}
+                                        reviewerName={item?.Profile?.Account.name}
+                                    //                     Profile={undefined}
+                                    />
+                                )}
+                            // keyExtractor={(item) => item.review_id.toString()}
+                            />
+                        </View>
+                    </View>
+                </View>
+            </PagerView>
         </View>
-      </PagerView>
-    </View>
-  );
+    );
 };
 
 export default Analysis;
@@ -494,6 +507,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         padding: 20,
         alignItems: 'center',
-        justifyContent:'center'
+        justifyContent: 'center'
     }
 });
