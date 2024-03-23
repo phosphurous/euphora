@@ -186,14 +186,11 @@ const Analysis = () => {
 
     // handle information taken from scan.tsx
     const route = useRoute();
-    let { scanIngredients } = route.params;
-    scanIngredients = scanIngredients.filter((item) => item?.name !== "")
-    console.log("scanIngredients:", scanIngredients);
-
+    let { productName, productID } = route.params;
     useEffect(() => {
         fetchReviews();
         fetchConditions();
-        // fetchIngredients();
+        fetchIngredients();
     }, []);
 
     const fetchConditions = async() => {
@@ -208,7 +205,7 @@ const Analysis = () => {
     }
 
     const fetchIngredients = async () => {
-        const API_URL = `${BACKEND_URL}/api/v1/products/1/confidence?product_name=The Face Shop Rice Water Cleansing Oil`;
+        const API_URL = `${BACKEND_URL}/api/v1/products/1/confidence?product_name=${productName}`;
         try {
             const response = await axios.get(API_URL);
             setIngredients(response.data?.output);
@@ -218,13 +215,14 @@ const Analysis = () => {
     };
 
     const fetchReviews = async () => {
-        const API_URL = `${BACKEND_URL}/api/v1/products/1/reviews`;
+        const API_URL = `${BACKEND_URL}/api/v1/products/${productID}/reviews`;
         try {
             const requestBody = { conditions };
             const response = await axios.post(API_URL, requestBody);
             setReviews(response.data?.data);
         } catch (error) {
-            console.error("Error fetching data:", error);
+            // console.error("Error fetching data: reviews", error);
+            setReviews([]);
         }
     };
     // Calculate number of ratings with 1, 2, 3, 4, 5 stars
@@ -249,7 +247,7 @@ const Analysis = () => {
         (negativeReactionsCount / reviews.length) * 100;
 
 
-    let sortedIngredients = scanIngredients.sort((a, b) => {
+    let sortedIngredients = ingredients.sort((a, b) => {
         return b.confidence - a.confidence;
     });
 
@@ -267,10 +265,9 @@ const Analysis = () => {
         <View style={{ flex: 1 }}>
             <View style={styles.topHalf}>
                 <View style={styles.product}>
-                    <Image source={require('../assets/images/aesopProduct.png')}></Image>
+                    <Image source={require('../assets/images/productBottle.png')} style={{ width: 50, height: 50, resizeMode: 'contain'}}></Image>
                     <View style={{ display: 'flex', justifyContent: 'center' }}>
-                        <Text>Brand</Text>
-                        <Text style={{ fontSize: 16 }}>Product Name</Text>
+                        <Text style={{ fontSize: 18}} numberOfLines={4}>{productName}</Text>
                     </View>
                 </View>
                 <View style={{ display: 'flex', flexDirection: 'row', backgroundColor: '#E9F4E4', justifyContent: 'space-evenly', paddingVertical: 5, borderRadius: 10 }}>
@@ -333,7 +330,7 @@ const Analysis = () => {
                 <View style={styles.page} key="1">
 
                     <View style={styles.topHalf}>
-                        <View>
+                        {reviews.length > 0? (<View>
                             <View style={styles.effectiveness}>
                                 <Text>Reviews from individuals who share similar skin conditions and have previously tried this product</Text>
                                 <View style={{
@@ -384,12 +381,10 @@ const Analysis = () => {
                                         description={item.description}
                                         negativeReaction={item.negativeReaction}
                                         reviewerName={item?.Profile?.Account.name}
-                                    //                     Profile={undefined}
                                     />
                                 )}
-                            // keyExtractor={(item) => item.review_id.toString()}
                             />
-                        </View>
+                        </View>):(<Text>No reviews yet.</Text>)}
                     </View>
                 </View>
             </PagerView>
@@ -417,7 +412,9 @@ const styles = StyleSheet.create({
     },
     product: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        paddingVertical: 15,
+        paddingRight: 40 
     },
     topHalf: {
         paddingHorizontal: 40,
