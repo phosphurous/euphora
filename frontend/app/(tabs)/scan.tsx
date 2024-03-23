@@ -1,6 +1,5 @@
-import { StyleSheet, Button, Image, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, Button, Image, TouchableOpacity, Text, View, ActivityIndicator, Modal } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -18,7 +17,28 @@ export default function ScanScreen() {
   const [image, setImage] = useState<string | null>(null);
   const [allergentLst, setAllergentLst] = useState<string[]>([]);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [loading, setLoading] = useState(false);
 
+  const displayLoadingIndicator = () => (
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={loading}
+    >
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      }}>
+        <View style={styles.loadingModal}>
+          <Text style={{ marginVertical: 30, fontSize:18 }}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+        </View>
+      </View>
+    </Modal>
+
+
+  );
   const pickImage = async () => {
     // Check for library permissions
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -66,7 +86,7 @@ export default function ScanScreen() {
   useEffect(() => {
     const sendImage = async () => {
       if (image) {
-
+        setLoading(true);
         // this is to compress the image because of file limit
         const manipResult = await manipulateAsync(
           image, [],
@@ -86,15 +106,15 @@ export default function ScanScreen() {
           const jsonResponse = JSON.parse(uploadResult.body);
           // console.log("confidence: " , jsonResponse);
           setAllergentLst(jsonResponse);
-          console.log("allergent list: " , allergentLst.length);
-          if(allergentLst.length > 0){
+          console.log("allergent list: ", allergentLst.length);
+          if (allergentLst.length > 0) {
             navigation.navigate("ingredientsAnalysisScan", { scanIngredients: allergentLst });
           }
           // setAllergentLst([]);
-          // Handle the JSON response here, such as updating state or UI
         } else {
           console.error('Failed to upload image to API');
         }
+        setLoading(false);
       }
     }
     sendImage()
@@ -117,6 +137,7 @@ export default function ScanScreen() {
   return (
     <View style={styles.container}>
       {/* <View style={{ flex: 1}}> */}
+      {loading && displayLoadingIndicator()}
       <View style={cameraStyles.cameraContainer}>
         <Camera
           ref={ref => setCamera(ref)}
@@ -151,9 +172,9 @@ export default function ScanScreen() {
         marginTop: 30,
         marginBottom: 20
       }}
-      onPress={() => navigation.navigate("findProduct")}
+        onPress={() => navigation.navigate("findProduct")}
       >
-          <Text>Search for product instead</Text>
+        <Text>Search for product instead</Text>
       </TouchableOpacity>
     </View>
   );
@@ -215,6 +236,16 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
+  },
+  loadingModal: {
+    backgroundColor: '#E9F4E4',
+    height: 200,
+    width: 200,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 });
 
