@@ -1,6 +1,5 @@
-import { StyleSheet, Button, Image, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, Button, Image, TouchableOpacity, Text, View, ActivityIndicator } from 'react-native';
 import EditScreenInfo from '@/components/EditScreenInfo';
-import { View } from '@/components/Themed';
 import { useEffect, useState } from 'react';
 
 import * as ImagePicker from 'expo-image-picker';
@@ -12,13 +11,19 @@ import { BACKEND_URL } from '@env';
 import { Link } from 'expo-router';
 
 export default function ScanScreen() {
-  const navigation = useNavigation();
+    const navigation = useNavigation();
 
-  const [camera, setCamera] = useState<Camera | null>(null);
-  const [image, setImage] = useState<string | null>(null);
-  const [allergentLst, setAllergentLst] = useState<string[]>([]);
-  const [isCameraReady, setIsCameraReady] = useState(false);
+    const [camera, setCamera] = useState<Camera | null>(null);
+    const [image, setImage] = useState<string | null>(null);
+    const [allergentLst, setAllergentLst] = useState<string[]>([]);
+    const [isCameraReady, setIsCameraReady] = useState(false);
+    const [loading, setLoading] = useState(false);
 
+    const displayLoadingIndicator = () => (
+      <View style={styles.loadingModal}>
+          <Text style={{marginVertical: 30}}>Loading...please wait</Text><ActivityIndicator size="small" color="#0000ff" />
+      </View>
+  );
   const pickImage = async () => {
     // Check for library permissions
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -66,7 +71,7 @@ export default function ScanScreen() {
   useEffect(() => {
     const sendImage = async () => {
       if (image) {
-
+        setLoading(true);
         // this is to compress the image because of file limit
         const manipResult = await manipulateAsync(
           image, [],
@@ -95,6 +100,7 @@ export default function ScanScreen() {
         } else {
           console.error('Failed to upload image to API');
         }
+        setLoading(false);
       }
     }
     sendImage()
@@ -116,26 +122,27 @@ export default function ScanScreen() {
 
   return (
     <View style={styles.container}>
-      {/* <View style={{ flex: 1}}> */}
-      <View style={cameraStyles.cameraContainer}>
-        <Camera
-          ref={ref => setCamera(ref)}
-          style={cameraStyles.fixedRatio}
-          type={CameraType.back}
-          ratio={'16:9'}
-          onCameraReady={() => setIsCameraReady(true)} />
-      </View>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.circularButton} onPress={() => takePicture()}>
-          <Text style={styles.buttonText}></Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.uploadButton} onPress={() => pickImage()}>
-          <Image
-            source={require("@/assets/images/image.png")} // Adjust the path to your image accordingly
-            style={styles.uploadButtonImage}
-          />
-        </TouchableOpacity>
-      </View>
+        {/* <View style={{ flex: 1}}> */}
+            {loading && displayLoadingIndicator()}
+            <View style={cameraStyles.cameraContainer}>
+                <Camera 
+                ref={ref => setCamera(ref)}
+                style={cameraStyles.fixedRatio} 
+                type={CameraType.back}
+                ratio={'16:9'} 
+                onCameraReady={() => setIsCameraReady(true)}/>
+            </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.circularButton} onPress={()=>takePicture()}>
+                <Text style={styles.buttonText}></Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.uploadButton} onPress={()=>pickImage()}>
+                <Image 
+                  source={require("@/assets/images/image.png")} // Adjust the path to your image accordingly
+                  style={styles.uploadButtonImage}
+                />
+              </TouchableOpacity>
+            </View>
 
 
 
@@ -215,6 +222,16 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: "80%",
+  },
+  loadingModal: {
+    backgroundColor: '#E9F4E4',
+    height: 200,
+    width: 200,
+    marginHorizontal: 20,
+    borderRadius: 20,
+    padding: 20,
+    alignItems: 'center',
+    justifyContent:'center'
   },
 });
 
