@@ -470,7 +470,8 @@ const styles = StyleSheet.create({
         display: 'flex',
         padding: 20,
         backgroundColor: '#E9F4E4',
-        borderRadius: 15
+        borderRadius: 15,
+        marginBottom: 10
     },
     modalView1: {
         flex: 1,
